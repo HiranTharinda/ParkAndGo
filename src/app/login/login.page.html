@@ -1,0 +1,69 @@
+<ion-header class="bar-profile" no-border>
+
+  <ion-card text-center class="hide-card">
+    <img class="profile-picture" src="../assets/icon/2.jpg" >
+  </ion-card>
+
+    <ion-grid style="height: 100%">
+    <ion-row  align-items-center style="height: 100%">
+      <ion-card style="width: 100% !important;" class="hide-card">
+        <form [formGroup]="todo" (ngSubmit)="logForm()">
+          <ion-item lines= "none">
+            <ion-label position="floating" >Username</ion-label>
+            <ion-input  type="text" (ionBlur)="checkMail()" formControlName="email"></ion-input>
+          </ion-item>
+          <ion-item lines= "none">
+            <ion-label position="floating">Password</ion-label>
+            <ion-input  type="password" formControlName="password"></ion-input>
+          </ion-item>
+
+           <ion-row>
+             <ion-col width-50 style="text-align: center">
+               <ion-button block ion-button type="submit" [disabled]="!todo.valid"><ion-icon name="mail" slot="start"> </ion-icon>Login</ion-button>
+             </ion-col>
+             <ion-col width-50 style="text-align: center">
+               <ion-button block ion-button type="submit" [disabled]="!todo.valid"><ion-icon name="help" slot="start"> </ion-icon>Forgot Password</ion-button>
+             </ion-col>
+           </ion-row>
+
+
+
+        </form>
+        <ion-row>
+          <ion-col width-50 style="text-align: center">
+           <p>
+             or
+             </p>
+          </ion-col>
+        </ion-row>
+
+        <ion-row>
+            <ion-col width-50 style="text-align: center">
+              <ion-button><ion-icon name="logo-facebook" slot="start"> </ion-icon>Login with Facebook</ion-button>
+            </ion-col>
+        </ion-row>
+        <ion-row>
+        <ion-col width-50 style="text-align: center">
+          <ion-button (click)="auth.googleLogin()"><ion-icon name="logo-googleplus" slot="start"> </ion-icon>Login with Google</ion-button>
+        </ion-col>
+        </ion-row>
+
+        <ion-row>
+        <ion-col width-50 style="text-align: center">
+        <p>
+          Havent't signed up yet?
+          </p>
+        </ion-col>
+        </ion-row>
+
+        <ion-row>
+        <ion-col width-50 style="text-align: center">
+        <ion-button [routerLink]="'/signup'" routerDirection="forward" ><ion-icon name="log-in" slot="start"> </ion-icon>Register</ion-button>
+        </ion-col>
+        </ion-row>
+      </ion-card>
+    </ion-row>
+
+  </ion-grid>
+
+</ion-header>

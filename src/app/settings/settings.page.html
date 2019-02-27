@@ -1,0 +1,73 @@
+<ion-content padding>
+  <h2>Settings</h2>
+
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title>User Info</ion-card-title>
+    </ion-card-header>
+
+    <ion-card-content>
+      <ion-list>
+        <ion-item>
+          <ion-label>Email</ion-label>
+          <p>  ranikamadurawe@gmail.com </p>
+        </ion-item>
+        <ion-item>
+          <ion-label>Display Name</ion-label>
+          <p>  ranikamadurawe </p>
+        </ion-item>
+        <ion-item>
+          <ion-button >Change Password</ion-button>
+        </ion-item>
+      </ion-list>
+    </ion-card-content>
+  </ion-card>
+
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title>Map Display</ion-card-title>
+    </ion-card-header>
+
+    <ion-card-content>
+      <ion-list>
+        <ion-item>
+          <ion-label>Display Points near Current Location</ion-label>
+          <ion-toggle [(ngModel)]="currshow"></ion-toggle>
+        </ion-item>
+        <ion-item >
+          <ion-label>Display Radius</ion-label>
+          <ion-input style="text-align:right" type="number" [disabled] = "!currshow" [(ngModel)]="currrad"></ion-input>
+        </ion-item>
+        <ion-item>
+          <ion-label>Display Points near Current Location</ion-label>
+          <ion-toggle [(ngModel)]="favshow"></ion-toggle>
+        </ion-item>
+        <ion-item >
+          <ion-label>Display Radius</ion-label>
+          <ion-input style="text-align:right"type="number" [disabled] = "!favshow" [(ngModel)]="favrad"></ion-input>
+        </ion-item>
+      </ion-list>
+    </ion-card-content>
+  </ion-card>
+
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title>Notifications</ion-card-title>
+    </ion-card-header>
+
+    <ion-card-content>
+      <ion-list>
+        <ion-item>
+          <ion-label>Notifications for current Location</ion-label>
+          <ion-toggle [(ngModel)]="currno"></ion-toggle>
+        </ion-item>
+        <ion-item>
+          <ion-label>Notifications for favourite Locations</ion-label>
+          <ion-toggle [(ngModel)]="favno"></ion-toggle>
+        </ion-item>
+      </ion-list>
+    </ion-card-content>
+  </ion-card>
+
+  <ion-button (click)="Load()">Save Settings</ion-button>
+</ion-content>

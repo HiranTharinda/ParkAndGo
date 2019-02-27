@@ -1,0 +1,22 @@
+<ion-content padding>
+  <h2>Email Verification Required</h2>
+  <p>
+    Your account must be verified to continue please check your email and verify your account
+  </p>
+  <ion-row>
+      <ion-col width-50 style="text-align: center">
+        <ion-button (click)="auth.sendVerifciation()">Didn't Get an Email?</ion-button>
+      </ion-col>
+  </ion-row>
+ <ion-row>
+  <ion-col width-50 style="text-align: center">
+    <ion-button >Try with Different Account</ion-button>
+  </ion-col>
+</ion-row>
+<ion-row>
+    <ion-col width-50 style="text-align: center">
+      <ion-button (click)="backtoLogin()">Done ?</ion-button>
+    </ion-col>
+</ion-row>
+
+</ion-content>
