@@ -35,6 +35,7 @@ ionViewDidLeave() {
 
   logForm(){
     this.auth.emailLogin(this.todo.value.email, this.todo.value.password);
+    this.todo.reset();
   }
 
 

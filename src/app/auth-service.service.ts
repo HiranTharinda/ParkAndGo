@@ -75,7 +75,7 @@ export class AuthServiceService {
       this.sendVerifciation();
       this.router.navigate(['/home']);
     }).catch(error => {
-      this.showToast(error);
+      this.signOut();
     });
   }
 

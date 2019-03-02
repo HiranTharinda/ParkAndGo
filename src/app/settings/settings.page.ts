@@ -23,7 +23,9 @@ export class SettingsPage implements OnInit {
   favshow = true;
   currrad = 5;
   favrad = 5;
-  constructor(public storage : LocalstorageService) { }
+  constructor(public storage : LocalstorageService) {
+    this.Load();
+  }
 
   ngOnInit() {
   }
@@ -38,9 +40,13 @@ export class SettingsPage implements OnInit {
   }
 
   Load(){
-    console.log('d');
     this.storage.provide().then(res => {
-      console.log(res);
+      this.favno = res.favno;
+      this.currno = res.currno;
+      this.currrad = res.currrad;
+      this.favrad = res.favrad;
+      this.currshow = res.currshow;
+      this.favshow = res.favshow;
     });
 
   }

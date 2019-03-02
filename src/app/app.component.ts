@@ -4,6 +4,7 @@ import { Platform } from '@ionic/angular';
 import { SplashScreen } from '@ionic-native/splash-screen/ngx';
 import { StatusBar } from '@ionic-native/status-bar/ngx';
 import { AuthServiceService } from './auth-service.service';
+import { LocalstorageService } from './localstorage.service';
 
 interface User {
   uid: string;
@@ -12,6 +13,13 @@ interface User {
   displayName?: string;
   favoriteColor?: string;
   emailVerified?:boolean;
+}
+
+interface Row {
+  id: string;
+  url : string;
+  lat : string;
+  lng : string;
 }
 
 @Component({
@@ -35,6 +43,7 @@ export class AppComponent {
     private splashScreen: SplashScreen,
     private statusBar: StatusBar,
     private auth : AuthServiceService,
+    private storage : LocalstorageService
   ) {
     this.initializeApp();
   }

@@ -16,7 +16,7 @@
 
         <ion-item routerLink="/settings" lines= "none" nav-clear menu-close ><ion-label >Settings</ion-label><ion-icon name="settings" slot="start"> </ion-icon></ion-item>
         <ion-item lines= "none" nav-clear menu-close ><ion-label >Edit Profile</ion-label><ion-icon name="contact" slot="start"> </ion-icon></ion-item>
-        <ion-item lines= "none" nav-clear menu-close (click)="auth.signOut()" ><ion-label >Logout</ion-label><ion-icon name="log-out" slot="start"> </ion-icon></ion-item>
+        <ion-item lines= "none" nav-clear menu-close (click)="storage.savetodb()" ><ion-label >Logout</ion-label><ion-icon name="log-out" slot="start"> </ion-icon></ion-item>
       </ion-list>
 
     </ion-footer>

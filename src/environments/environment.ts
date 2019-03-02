@@ -11,6 +11,9 @@ export const environment = {
     projectId: "parkandgo-d6ee1",
     storageBucket: "parkandgo-d6ee1.appspot.com",
     messagingSenderId: "320215829065"
+  },
+  mapbox: {
+    accessToken: 'pk.eyJ1IjoicmFuaWthbWFkdXJhd2UiLCJhIjoiY2pzcjRqdXNxMDh3azQ0cndmZW5qODhzaSJ9.J50qx45vzy9CYgQH5-Yv1w'
   }
 };
 

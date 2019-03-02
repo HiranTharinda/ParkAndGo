@@ -6,6 +6,7 @@ import { environment } from '../environments/environment';
 import * as firebase from 'firebase/app';
 firebase.initializeApp(environment.firebase);
 import * as geofirex from 'geofirex';
+import { toGeoJSON } from 'geofirex'
 const geo = geofirex.init(firebase);
 import { switchMap } from 'rxjs/operators';
 
@@ -66,7 +67,33 @@ export class DbService {
   }
 
   savesettings(settings){
-    this.afs.collection('settings').doc(this.user.uid).set(settings)
+    this.afs.collection('settings').doc(this.user.uid).set(settings).then(res => {
+      this.auth.signOut();
+    });
+  }
+
+  locations(){
+    const cities = geo.collection('private')
+    const center = geo.point(10, 20);
+    const radius = 100; // km
+    const field = 'position';
+
+
+
+    const query = cities.within(center, radius, field).pipe( toGeoJSON('position', true) );
+    return query
+  }
+
+  publocations(){
+    const cities = geo.collection('public')
+    const center = geo.point(10, 20);
+    const radius = 100; // km
+    const field = 'position';
+
+
+
+    const query = cities.within(center, radius, field).pipe( toGeoJSON('position', true) );
+    return query
   }
 
 
