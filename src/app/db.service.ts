@@ -72,28 +72,26 @@ export class DbService {
     });
   }
 
-  locations(){
-    const cities = geo.collection('private')
-    const center = geo.point(10, 20);
-    const radius = 100; // km
-    const field = 'position';
+  locations(distance , mailserver , lat,lng){
+      const format = {};
+      const cities = geo.collection('private', ref=>ref.where("dmn", "array-contains",mailserver ))
+      const center = geo.point(lat,lng);
+      const radius = 100; // km
+      const field = 'position';
+      const query = cities.within(center, distance, field).pipe( toGeoJSON('position', true) );
+      return query
 
-
-
-    const query = cities.within(center, radius, field).pipe( toGeoJSON('position', true) );
-    return query
   }
 
-  publocations(){
-    const cities = geo.collection('public')
-    const center = geo.point(10, 20);
-    const radius = 100; // km
-    const field = 'position';
+  publocations(distance,lat,lng){
 
+      const cities = geo.collection('public')
+      const center = geo.point(lat,lng);
+      const radius = 100; // km
+      const field = 'position';
+      const query = cities.within(center, distance, field).pipe( toGeoJSON('position', true) );
+      return query
 
-
-    const query = cities.within(center, radius, field).pipe( toGeoJSON('position', true) );
-    return query
   }
 
 

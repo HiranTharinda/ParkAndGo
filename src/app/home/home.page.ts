@@ -4,6 +4,7 @@ import { environment } from '../../environments/environment';
 import * as mapboxgl from 'mapbox-gl';
 import { DbService } from '../db.service';
 import { AuthServiceService } from '../auth-service.service';
+import { LocalstorageService } from '../localstorage.service';
 import { Geolocation } from '@ionic-native/geolocation/ngx';
 
 export interface IGeometry {
@@ -64,25 +65,33 @@ export class HomePage implements OnInit {
     favoriteColor : "",
     emailVerified: false
   };
-  source: any;
+  source1: any;
+  source2:any;
   privmarkers: any;
+  pubmarkers:any;
+  settings:any;
+  mailsplit:any;
 
-  constructor(private auth : AuthServiceService, private db : DbService,private geolocation: Geolocation) {
+  constructor(private auth : AuthServiceService, private db : DbService,private geolocation: Geolocation, private storage : LocalstorageService) {
 
     mapboxgl.accessToken = environment.mapbox.accessToken
 
   }
 
   ngOnInit(): void {
-    this.initializeMap();
-    this.privmarkers = this.db.locations();
     this.auth.user.subscribe( val => {
-          this.user = val;
-          console.log(this.user);
-        });
+      this.user = val;
+      this.mailsplit = this.user.email.split('@');
+      this.storage.provide().then(settings => {
+        this.settings = settings;
+        this.initializeMap(settings,this.mailsplit);
+      })
+
+
+    });
   }
 
-  private initializeMap() {
+  private initializeMap(settings,mailsplit) {
     /// locate the user
     if (navigator.geolocation) {
        navigator.geolocation.getCurrentPosition(position => {
@@ -95,8 +104,10 @@ export class HomePage implements OnInit {
           draggable: true
         }).setLngLat([this.lng, this.lat]).addTo(this.map);
         this.centermarker.on('dragend', markerval => {
-          console.log(markerval);
+          this.changetype(markerval);
         })
+        this.privmarkers = this.db.locations(settings.currrad,mailsplit[mailsplit.length-1],this.lat,this.lng);
+        this.pubmarkers = this.db.publocations(settings.currrad,this.lat,this.lng);
       });
     }else{
       console.log('ya');
@@ -113,17 +124,27 @@ export class HomePage implements OnInit {
         this.centermarker.on('dragend', markerval => {
           console.log(markerval);
         })
+        this.privmarkers = this.db.locations(settings.currrad,mailsplit[mailsplit.length-1],this.lat,this.lng);
+        this.pubmarkers = this.db.publocations(settings.currrad,this.lat,this.lng);
       })
     }
+    this.buildMap();
 
-    this.buildMap()
+
 
   }
 
-  changetype(){
-    this.privmarkers = this.db.publocations();
+  changetype(newlocation){
+    console.log(newlocation.target._lngLat);
+    this.privmarkers = this.db.locations(this.settings.currrad,this.mailsplit[this.mailsplit.length - 1],newlocation.target._lngLat.lat,newlocation.target._lngLat.lng);
+    this.pubmarkers = this.db.publocations(this.settings.currrad,newlocation.target._lngLat.lat,newlocation.target._lngLat.lng);
+
     this.map.removeLayer('firebase');
     this.map.removeSource('firebase');
+
+    this.map.removeLayer('firebase2');
+    this.map.removeSource('firebase2');
+
     this.map.addSource('firebase', {
        type: 'geojson',
        data: {
@@ -135,13 +156,30 @@ export class HomePage implements OnInit {
        clusterRadius: 50
     });
 
-    /// get source
-    this.source = this.map.getSource('firebase')
+    this.map.addSource('firebase2', {
+       type: 'geojson',
+       data: {
+         type: 'FeatureCollection',
+         features: []
+       },
+       cluster: true,
+       clusterMaxZoom: 14,
+       clusterRadius: 50
+    });
 
+    /// get source
+    this.source1 = this.map.getSource('firebase');
+    this.source2 = this.map.getSource('firebase2');
     /// subscribe to realtime database and set data source
     this.privmarkers.subscribe(markers => {
+        console.log(markers);
         let data = markers
-        this.source.setData(data)
+        this.source1.setData(data)
+    })
+    this.pubmarkers.subscribe(markers => {
+        console.log(markers);
+        let data = markers
+        this.source2.setData(data)
     })
 
     /// create map layers with realtime data
@@ -163,6 +201,23 @@ export class HomePage implements OnInit {
       }
     })
 
+    this.map.addLayer({
+      id: 'firebase2',
+      source: 'firebase2',
+      type: 'symbol',
+      layout: {
+        'text-field': '{ps}',
+        'text-size': 24,
+        'text-transform': 'uppercase',
+        'icon-image': 'rocket-15',
+        'text-offset': [0, 1.5]
+      },
+      paint: {
+        'text-color': '#fd323f',
+        'text-halo-color': '#fff',
+        'text-halo-width': 2
+      }
+    })
   }
 
   buildMap() {
@@ -192,13 +247,30 @@ export class HomePage implements OnInit {
              clusterRadius: 50
           });
 
-          /// get source
-          this.source = this.map.getSource('firebase')
+          this.map.addSource('firebase2', {
+             type: 'geojson',
+             data: {
+               type: 'FeatureCollection',
+               features: []
+             },
+             cluster: true,
+             clusterMaxZoom: 14,
+             clusterRadius: 50
+          });
 
+          /// get source
+          this.source1 = this.map.getSource('firebase');
+          this.source2 = this.map.getSource('firebase2');
           /// subscribe to realtime database and set data source
           this.privmarkers.subscribe(markers => {
+              console.log(markers);
               let data = markers
-              this.source.setData(data)
+              this.source1.setData(data)
+          })
+          this.pubmarkers.subscribe(markers => {
+              console.log(markers);
+              let data = markers
+              this.source2.setData(data)
           })
 
           /// create map layers with realtime data
@@ -215,6 +287,24 @@ export class HomePage implements OnInit {
             },
             paint: {
               'text-color': '#f16624',
+              'text-halo-color': '#fff',
+              'text-halo-width': 2
+            }
+          })
+
+          this.map.addLayer({
+            id: 'firebase2',
+            source: 'firebase2',
+            type: 'symbol',
+            layout: {
+              'text-field': '{ps}',
+              'text-size': 24,
+              'text-transform': 'uppercase',
+              'icon-image': 'rocket-15',
+              'text-offset': [0, 1.5]
+            },
+            paint: {
+              'text-color': '#fd323f',
               'text-halo-color': '#fff',
               'text-halo-width': 2
             }
