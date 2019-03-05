@@ -71,11 +71,24 @@ export class HomePage implements OnInit {
   pubmarkers:any;
   settings:any;
   mailsplit:any;
+  markerlocation:any;
 
   constructor(private auth : AuthServiceService, private db : DbService,private geolocation: Geolocation, private storage : LocalstorageService) {
 
     mapboxgl.accessToken = environment.mapbox.accessToken
 
+  }
+
+  ionViewDidLoad(){
+    console.log('loaded from cache');
+      this.mailsplit = this.user.email.split('@');
+      this.storage.provide().then(settings => {
+        this.settings = settings;
+        this.changetype(this.markerlocation);
+        this.map.flyTo({
+          center: [this.markerlocation.target._lngLat.lng,this.markerlocation.target._lngLat.lat]
+        })
+      })
   }
 
   ngOnInit(): void {
@@ -86,8 +99,6 @@ export class HomePage implements OnInit {
         this.settings = settings;
         this.initializeMap(settings,this.mailsplit);
       })
-
-
     });
   }
 
@@ -97,6 +108,9 @@ export class HomePage implements OnInit {
        navigator.geolocation.getCurrentPosition(position => {
         this.lat = position.coords.latitude;
         this.lng = position.coords.longitude;
+        this.privmarkers = this.db.locations(settings.currrad,mailsplit[mailsplit.length-1],this.lat,this.lng);
+        this.pubmarkers = this.db.publocations(settings.currrad,this.lat,this.lng);
+        this.buildMap();
         this.map.flyTo({
           center: [this.lng, this.lat]
         })
@@ -105,9 +119,9 @@ export class HomePage implements OnInit {
         }).setLngLat([this.lng, this.lat]).addTo(this.map);
         this.centermarker.on('dragend', markerval => {
           this.changetype(markerval);
+          this.markerlocation = markerval;
         })
-        this.privmarkers = this.db.locations(settings.currrad,mailsplit[mailsplit.length-1],this.lat,this.lng);
-        this.pubmarkers = this.db.publocations(settings.currrad,this.lat,this.lng);
+
       });
     }else{
       console.log('ya');
@@ -115,6 +129,9 @@ export class HomePage implements OnInit {
         console.log(resp);
         this.lat = resp.coords.latitude;
         this.lng = resp.coords.longitude;
+        this.privmarkers = this.db.locations(settings.currrad,mailsplit[mailsplit.length-1],this.lat,this.lng);
+        this.pubmarkers = this.db.publocations(settings.currrad,this.lat,this.lng);
+        this.buildMap();
         this.map.flyTo({
           center: [this.lng, this.lat]
         })
@@ -122,13 +139,14 @@ export class HomePage implements OnInit {
           draggable: true
         }).setLngLat([this.lng, this.lat]).addTo(this.map);
         this.centermarker.on('dragend', markerval => {
-          console.log(markerval);
+          this.changetype(markerval);
+          this.markerlocation=markerval;
         })
-        this.privmarkers = this.db.locations(settings.currrad,mailsplit[mailsplit.length-1],this.lat,this.lng);
-        this.pubmarkers = this.db.publocations(settings.currrad,this.lat,this.lng);
+
+
       })
     }
-    this.buildMap();
+
 
 
 
