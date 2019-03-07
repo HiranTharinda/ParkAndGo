@@ -6,6 +6,8 @@ import { StatusBar } from '@ionic-native/status-bar/ngx';
 import { AuthServiceService } from './auth-service.service';
 import { LocalstorageService } from './localstorage.service';
 
+import { FcmService } from './fcm.service';
+
 interface User {
   uid: string;
   email: string;
@@ -42,10 +44,34 @@ export class AppComponent {
     private platform: Platform,
     private splashScreen: SplashScreen,
     private statusBar: StatusBar,
+    private fcm: FcmService,
     private auth : AuthServiceService,
     private storage : LocalstorageService
   ) {
     this.initializeApp();
+  }
+
+  private /*async*/ presentToast(message) {
+    /*const toast = await this.toastController.create({
+      message,
+      duration: 3000
+    });
+    toast.present();*/
+    console.log(message);
+  }
+
+  private notificationSetup(mail) {
+    var mailsplitarray = mail.split('@');
+    var mailsplit = mailsplitarray[mailsplitarray.length -1]
+    this.fcm.getToken(mail);
+    this.fcm.onNotifications().subscribe(
+      (msg) => {
+        if (this.platform.is('ios')) {
+          this.presentToast(msg.aps.alert);
+        } else {
+          this.presentToast(msg.body);
+        }
+      });
   }
 
   initializeApp() {
@@ -54,6 +80,7 @@ export class AppComponent {
       this.splashScreen.hide();
       this.auth.user.subscribe( val => {
         this.user = val;
+        this.notificationSetup(this.user.email);
         if(val == null ){
           this.user = {
             uid : "",

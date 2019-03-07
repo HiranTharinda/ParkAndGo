@@ -27,6 +27,8 @@ import { LocalstorageService } from './localstorage.service';
 import { DbService } from './db.service';
 import {Geolocation} from '@ionic-native/geolocation/ngx';
 
+import { Firebase } from '@ionic-native/firebase/ngx';
+
 @NgModule({
   declarations: [AppComponent],
   entryComponents: [],
@@ -45,6 +47,7 @@ import {Geolocation} from '@ionic-native/geolocation/ngx';
     AuthServiceService ,
     AuthGuard,
     DbService,
+    Firebase,
     Geolocation,
     LocalstorageService,
     LoggedInGuard,

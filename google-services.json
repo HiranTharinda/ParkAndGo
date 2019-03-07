@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "320215829065",
+    "firebase_url": "https://parkandgo-d6ee1.firebaseio.com",
+    "project_id": "parkandgo-d6ee1",
+    "storage_bucket": "parkandgo-d6ee1.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:320215829065:android:4ae6f434b1876b0b",
+        "android_client_info": {
+          "package_name": "io.ionic.parkandgo"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "320215829065-p31tecv30i8ttac4u65uhn7um9qgl2vn.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDOru5kDks3QPfQy8_rhPRcoJuBg4zc58g"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
