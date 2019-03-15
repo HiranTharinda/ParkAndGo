@@ -7,6 +7,8 @@ import { AuthServiceService } from './auth-service.service';
 import { LocalstorageService } from './localstorage.service';
 
 import { FcmService } from './fcm.service';
+import { LocalNotifications } from '@ionic-native/local-notifications/ngx';
+
 
 interface User {
   uid: string;
@@ -46,7 +48,8 @@ export class AppComponent {
     private statusBar: StatusBar,
     private fcm: FcmService,
     private auth : AuthServiceService,
-    private storage : LocalstorageService
+    private storage : LocalstorageService,
+    private localNotifications: LocalNotifications
   ) {
     this.initializeApp();
   }
@@ -63,13 +66,17 @@ export class AppComponent {
   private notificationSetup(mail) {
     var mailsplitarray = mail.split('@');
     var mailsplit = mailsplitarray[mailsplitarray.length -1]
-    this.fcm.getToken(mail);
+    this.fcm.getToken(mailsplit);
     this.fcm.onNotifications().subscribe(
       (msg) => {
         if (this.platform.is('ios')) {
           this.presentToast(msg.aps.alert);
         } else {
-          this.presentToast(msg.body);
+          console.log('msg recieved');
+          this.localNotifications.schedule({
+            id: 1,
+            text: 'Single ILocalNotification'
+          });
         }
       });
   }

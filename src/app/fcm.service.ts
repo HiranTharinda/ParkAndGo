@@ -2,15 +2,18 @@ import { Injectable } from '@angular/core';
 import { Firebase } from '@ionic-native/firebase/ngx';
 import { Platform } from '@ionic/angular';
 import { AngularFirestore } from '@angular/fire/firestore';
+import { LocalstorageService } from './localstorage.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class FcmService {
-
-  constructor(private firebase: Firebase,
-              private afs: AngularFirestore,
-              private platform: Platform) { }
+  settings : any;
+  constructor(private storage : LocalstorageService,private firebase: Firebase,private afs: AngularFirestore,  private platform: Platform) {
+    this.storage.provide().then(settings => {
+      this.settings = settings;
+    })
+  }
 
               async getToken(email) {
                 let token;
@@ -42,9 +45,30 @@ export class FcmService {
               }
 
               private subscribetoParking(email){
+                console.log(this.settings)
+                if(this.settings.currno){
+                  console.log('subscribed');
+                  this.firebase.subscribe("public");
+                  console.log(email);
+                  this.firebase.subscribe(email);
+                }else{
+                  console.log('not subscribed');
+                  this.firebase.subscribe("public");
+                  console.log(email);
+                  this.firebase.subscribe(email);
+                }
+              }
+
+              public ManualSub(email){
                 this.firebase.subscribe("public");
                 console.log(email);
                 this.firebase.subscribe(email);
+              }
+
+              public Manualunsub(email){
+                this.firebase.unsubscribe("public");
+                console.log(email);
+                this.firebase.unsubscribe(email);
               }
 
               onNotifications() {

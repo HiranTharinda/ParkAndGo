@@ -6,6 +6,7 @@ import { DbService } from '../db.service';
 import { AuthServiceService } from '../auth-service.service';
 import { LocalstorageService } from '../localstorage.service';
 import { Geolocation } from '@ionic-native/geolocation/ngx';
+import { LocationAccuracy } from '@ionic-native/location-accuracy/ngx';
 
 export interface IGeometry {
     type: string;
@@ -67,31 +68,39 @@ export class HomePage implements OnInit {
   };
   source1: any;
   source2:any;
+  gps:any;
   privmarkers: any;
   pubmarkers:any;
   settings:any;
   mailsplit:any;
   markerlocation:any;
+  timesentered = 0;
 
-  constructor(private auth : AuthServiceService, private db : DbService,private geolocation: Geolocation, private storage : LocalstorageService) {
+  constructor(private locationAccuracy: LocationAccuracy, private auth : AuthServiceService, private db : DbService,private geolocation: Geolocation, private storage : LocalstorageService) {
 
     mapboxgl.accessToken = environment.mapbox.accessToken
 
   }
 
-  ionViewDidLoad(){
-    console.log('loaded from cache');
-      this.mailsplit = this.user.email.split('@');
+  ionViewWillEnter(){
+    console.log('view will enter');
+    if(this.timesentered == 0){
+        this.timesentered = 1
+    }else{
       this.storage.provide().then(settings => {
         this.settings = settings;
         this.changetype(this.markerlocation);
-        this.map.flyTo({
-          center: [this.markerlocation.target._lngLat.lng,this.markerlocation.target._lngLat.lat]
-        })
       })
+    }
+
+  }
+
+  ionViewDidLeave(){
+    console.log('view did leave');
   }
 
   ngOnInit(): void {
+    console.log('ng on init')
     this.auth.user.subscribe( val => {
       this.user = val;
       this.mailsplit = this.user.email.split('@');
@@ -104,7 +113,9 @@ export class HomePage implements OnInit {
 
   private initializeMap(settings,mailsplit) {
     /// locate the user
-    if (navigator.geolocation) {
+
+    if (false) {
+       console.log("using old");
        navigator.geolocation.getCurrentPosition(position => {
         this.lat = position.coords.latitude;
         this.lng = position.coords.longitude;
@@ -124,27 +135,38 @@ export class HomePage implements OnInit {
 
       });
     }else{
-      console.log('ya');
-      this.geolocation.getCurrentPosition().then((resp) => {
-        console.log(resp);
-        this.lat = resp.coords.latitude;
-        this.lng = resp.coords.longitude;
-        this.privmarkers = this.db.locations(settings.currrad,mailsplit[mailsplit.length-1],this.lat,this.lng);
-        this.pubmarkers = this.db.publocations(settings.currrad,this.lat,this.lng);
-        this.buildMap();
-        this.map.flyTo({
-          center: [this.lng, this.lat]
-        })
-        this.centermarker = new mapboxgl.Marker({
-          draggable: true
-        }).setLngLat([this.lng, this.lat]).addTo(this.map);
-        this.centermarker.on('dragend', markerval => {
-          this.changetype(markerval);
-          this.markerlocation=markerval;
-        })
+      this.locationAccuracy.canRequest().then((canRequest: boolean) => {
+        console.log(canRequest);
+        if(canRequest) {
+          this.locationAccuracy.request(this.locationAccuracy.REQUEST_PRIORITY_HIGH_ACCURACY).then(
+            () => {
+              console.log('got permission');
+              this.geolocation.getCurrentPosition().then((resp) => {
+                console.log(resp);
+                this.lat = resp.coords.latitude;
+                this.lng = resp.coords.longitude;
+                this.privmarkers = this.db.locations(settings.currrad,mailsplit[mailsplit.length-1],this.lat,this.lng);
+                this.pubmarkers = this.db.publocations(settings.currrad,this.lat,this.lng);
+                this.buildMap();
+                this.map.flyTo({
+                  center: [this.lng, this.lat]
+                })
+                this.centermarker = new mapboxgl.Marker({
+                  draggable: true
+                }).setLngLat([this.lng, this.lat]).addTo(this.map);
+                this.centermarker.on('dragend', markerval => {
+                  this.changetype(markerval);
+                  this.markerlocation=markerval;
+                })
 
 
-      })
+              })
+            },
+            error => console.log('Error requesting location permissions', error)
+          );
+        }
+
+      } , (err)=> {console.log(err)});
     }
 
 
@@ -253,6 +275,8 @@ export class HomePage implements OnInit {
     this.map.on('load', (event) => {
 
 
+          // Add the geocoder to the map
+
           /// register source
           this.map.addSource('firebase', {
              type: 'geojson',
@@ -276,9 +300,17 @@ export class HomePage implements OnInit {
              clusterRadius: 50
           });
 
+          this.map.addSource('gps', {
+             type: 'geojson',
+             data: {
+               type: 'FeatureCollection',
+               features: []
+             }
+          });
           /// get source
           this.source1 = this.map.getSource('firebase');
           this.source2 = this.map.getSource('firebase2');
+          this.gps = this.map.getSource('gps');
           /// subscribe to realtime database and set data source
           this.privmarkers.subscribe(markers => {
               console.log(markers);
@@ -290,6 +322,14 @@ export class HomePage implements OnInit {
               let data = markers
               this.source2.setData(data)
           })
+          this.geolocation.watchPosition().subscribe(data => {
+              let pos = [data.coords.longitude,data.coords.latitude]
+              let x = new GeoJson(pos);
+              let arr = [x];
+              const fc = new FeatureCollection(arr);
+              console.log(fc);
+              this.gps.setData(fc);
+          });
 
           /// create map layers with realtime data
           this.map.addLayer({
@@ -323,6 +363,24 @@ export class HomePage implements OnInit {
             },
             paint: {
               'text-color': '#fd323f',
+              'text-halo-color': '#fff',
+              'text-halo-width': 2
+            }
+          })
+
+          this.map.addLayer({
+            id: 'gps',
+            source: 'gps',
+            type: 'symbol',
+            layout: {
+              'text-field': 'me',
+              'text-size': 24,
+              'text-transform': 'uppercase',
+              'icon-image': 'rocket-15',
+              'text-offset': [0, 1.5]
+            },
+            paint: {
+              'text-color': '#f16624',
               'text-halo-color': '#fff',
               'text-halo-width': 2
             }

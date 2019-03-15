@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { LocalstorageService } from '../localstorage.service';
+import { FcmService } from '../fcm.service';
+import { AuthServiceService } from '../auth-service.service';
 
 interface Settings{
   favno: boolean;
@@ -23,20 +25,31 @@ export class SettingsPage implements OnInit {
   favshow = true;
   currrad = 5;
   favrad = 5;
-  constructor(public storage : LocalstorageService) {
+  user : any;
+  constructor(private auth : AuthServiceService,public storage : LocalstorageService , public fcm : FcmService) {
     this.Load();
+    this.auth.user.subscribe( val => {
+      this.user = val;
+    });
   }
 
   ngOnInit() {
   }
 
   Save(){
+    var mailsplitarray = this.user.email.split('@');
+    var mailsplit = mailsplitarray[mailsplitarray.length -1]
     this.storage.set('favno',this.favno);
     this.storage.set('currno',this.currno);
     this.storage.set('currshow',this.currshow);
     this.storage.set('favshow',this.favshow);
     this.storage.set('currrad',this.currrad);
     this.storage.set('favrad',this.favrad);
+    if(this.currno){
+      this.fcm.ManualSub(mailsplit);
+    }else{
+      this.fcm.Manualunsub(mailsplit);
+    }
   }
 
   Load(){

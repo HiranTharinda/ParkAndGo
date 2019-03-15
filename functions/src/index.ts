@@ -13,11 +13,6 @@ export const publicupdate = functions.firestore.document('public/{locationID}').
       const topic = 'public';
 
       const message = {
-        notification: {
-                      title: "Something",
-                      body: "yay"
-
-        },
         data: {
           hash : original.position.geohash,
           lat : original.position.geopoint._latitude.toString(),
@@ -44,11 +39,6 @@ if(originals){
       console.log(original);
       for(const i of original.dmn ){
         const message = {
-          notification: {
-                        title: "Something",
-                        body: "yay"
-
-          },
           data: {
             hash : original.position.geohash,
             lat : original.position.geopoint._latitude.toString(),

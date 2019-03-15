@@ -29,6 +29,8 @@ import {Geolocation} from '@ionic-native/geolocation/ngx';
 
 import { Firebase } from '@ionic-native/firebase/ngx';
 
+import { LocationAccuracy } from '@ionic-native/location-accuracy/ngx';
+
 @NgModule({
   declarations: [AppComponent],
   entryComponents: [],
@@ -49,6 +51,7 @@ import { Firebase } from '@ionic-native/firebase/ngx';
     DbService,
     Firebase,
     Geolocation,
+    LocationAccuracy,
     LocalstorageService,
     LoggedInGuard,
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy }
