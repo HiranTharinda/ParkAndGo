@@ -8,7 +8,7 @@ import { LocalstorageService } from './localstorage.service';
 
 import { FcmService } from './fcm.service';
 import { LocalNotifications } from '@ionic-native/local-notifications/ngx';
-
+import { Geolocation } from '@ionic-native/geolocation/ngx';
 
 interface User {
   uid: string;
@@ -41,6 +41,7 @@ export class AppComponent {
     favoriteColor : "",
     emailVerified: false
   };
+  settings : any;
 
   constructor(
     private platform: Platform,
@@ -49,8 +50,12 @@ export class AppComponent {
     private fcm: FcmService,
     private auth : AuthServiceService,
     private storage : LocalstorageService,
+    private geolocation: Geolocation,
     private localNotifications: LocalNotifications
   ) {
+    this.storage.provide().then(settings => {
+      this.settings = settings;
+    })
     this.initializeApp();
   }
 
@@ -73,12 +78,37 @@ export class AppComponent {
           this.presentToast(msg.aps.alert);
         } else {
           console.log('msg recieved');
-          this.localNotifications.schedule({
-            id: 1,
-            text: 'Single ILocalNotification'
+          console.log(msg)
+          this.geolocation.getCurrentPosition().then((resp) => {
+            var distance = this.caldistance(resp.coords.latitude,resp.coords.longitude,msg.lat,msg.lng)
+            console.log(distance)
+            if(distance < this.settings.currrad){
+              this.localNotifications.schedule({
+                id: 1,
+                text: 'New Location Pop up'
+              });
+            }
           });
+
         }
       });
+  }
+  deg2rad(deg) {
+   return deg * (Math.PI/180)
+  }
+
+  caldistance(lat1,lon1,lat2,lon2){
+    var R = 6371; // Radius of the earth in km
+    var dLat = this.deg2rad(lat2-lat1);  // deg2rad below
+    var dLon = this.deg2rad(lon2-lon1);
+    var a =
+      Math.sin(dLat/2) * Math.sin(dLat/2) +
+      Math.cos(this.deg2rad(lat1)) * Math.cos(this.deg2rad(lat2)) *
+      Math.sin(dLon/2) * Math.sin(dLon/2)
+      ;
+    var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+    var d = R * c; // Distance in km
+    return d;
   }
 
   initializeApp() {

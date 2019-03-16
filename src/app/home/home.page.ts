@@ -2,11 +2,14 @@ import { AfterContentInit, Component, OnInit, ViewChild} from '@angular/core';
 declare var google;
 import { environment } from '../../environments/environment';
 import * as mapboxgl from 'mapbox-gl';
+import {Validators, FormBuilder, FormGroup } from '@angular/forms';
 import { DbService } from '../db.service';
 import { AuthServiceService } from '../auth-service.service';
 import { LocalstorageService } from '../localstorage.service';
 import { Geolocation } from '@ionic-native/geolocation/ngx';
 import { LocationAccuracy } from '@ionic-native/location-accuracy/ngx';
+import { NativeGeocoder, NativeGeocoderReverseResult, NativeGeocoderForwardResult, NativeGeocoderOptions } from '@ionic-native/native-geocoder/ngx';
+
 
 export interface IGeometry {
     type: string;
@@ -75,11 +78,33 @@ export class HomePage implements OnInit {
   mailsplit:any;
   markerlocation:any;
   timesentered = 0;
+  searchbar: string;
 
-  constructor(private locationAccuracy: LocationAccuracy, private auth : AuthServiceService, private db : DbService,private geolocation: Geolocation, private storage : LocalstorageService) {
+  constructor(private nativeGeocoder: NativeGeocoder, private locationAccuracy: LocationAccuracy, private auth : AuthServiceService, private db : DbService,private geolocation: Geolocation, private storage : LocalstorageService) {
 
     mapboxgl.accessToken = environment.mapbox.accessToken
 
+  }
+
+  getResults(){
+    let options: NativeGeocoderOptions = {
+        useLocale: true,
+        maxResults: 5
+    };
+    this.nativeGeocoder.forwardGeocode(this.searchbar, options)
+      .then((coordinates: NativeGeocoderForwardResult[]) => {
+        console.log(coordinates);
+        console.log('The coordinates are latitude=' + coordinates[0].latitude + ' and longitude=' + coordinates[0].longitude)
+        this.searchbar = null;
+        this.centermarker.setLngLat([coordinates[0].longitude, coordinates[0].latitude])
+        var markerval = {target : { _lngLat : { lat : coordinates[0].latitude , lng:coordinates[0].longitude }}}
+        this.markerlocation = markerval;
+        this.changetype(markerval);
+        this.map.flyTo({
+          center: [coordinates[0].longitude, coordinates[0].latitude]
+        })
+      })
+      .catch((error: any) => console.log(error));
   }
 
   ionViewWillEnter(){
@@ -155,6 +180,7 @@ export class HomePage implements OnInit {
                   draggable: true
                 }).setLngLat([this.lng, this.lat]).addTo(this.map);
                 this.centermarker.on('dragend', markerval => {
+                  console.log(markerval)
                   this.changetype(markerval);
                   this.markerlocation=markerval;
                 })
@@ -231,7 +257,7 @@ export class HomePage implements OnInit {
         'text-field': '{ps}',
         'text-size': 24,
         'text-transform': 'uppercase',
-        'icon-image': 'rocket-15',
+        'icon-image': 'car-15',
         'text-offset': [0, 1.5]
       },
       paint: {
@@ -249,7 +275,7 @@ export class HomePage implements OnInit {
         'text-field': '{ps}',
         'text-size': 24,
         'text-transform': 'uppercase',
-        'icon-image': 'rocket-15',
+        'icon-image': 'car-15',
         'text-offset': [0, 1.5]
       },
       paint: {
@@ -340,7 +366,7 @@ export class HomePage implements OnInit {
               'text-field': '{ps}',
               'text-size': 24,
               'text-transform': 'uppercase',
-              'icon-image': 'rocket-15',
+              'icon-image': 'car-15',
               'text-offset': [0, 1.5]
             },
             paint: {
@@ -358,7 +384,7 @@ export class HomePage implements OnInit {
               'text-field': '{ps}',
               'text-size': 24,
               'text-transform': 'uppercase',
-              'icon-image': 'rocket-15',
+              'icon-image': 'car-15',
               'text-offset': [0, 1.5]
             },
             paint: {
@@ -373,10 +399,10 @@ export class HomePage implements OnInit {
             source: 'gps',
             type: 'symbol',
             layout: {
-              'text-field': 'me',
+              'text-field': '',
               'text-size': 24,
               'text-transform': 'uppercase',
-              'icon-image': 'rocket-15',
+              'icon-image': 'circle-15',
               'text-offset': [0, 1.5]
             },
             paint: {
