@@ -1,7 +1,7 @@
 <ion-header class="bar-profile" no-border>
 
   <ion-card text-center class="hide-card">
-    <img class="profile-picture" src="../assets/icon/2.jpg" >
+    <img class="profile-picture" src="../assets/icon/4.png" >
   </ion-card>
 
     <ion-grid style="height: 100%">
@@ -19,10 +19,10 @@
 
            <ion-row>
              <ion-col width-50 style="text-align: center">
-               <ion-button block ion-button type="submit" [disabled]="!todo.valid"><ion-icon name="mail" slot="start"> </ion-icon>Login</ion-button>
+               <ion-button shape="round" block ion-button type="submit" [disabled]="!todo.valid"><ion-icon name="mail" slot="start"> </ion-icon>Login</ion-button>
              </ion-col>
              <ion-col width-50 style="text-align: center">
-               <ion-button block ion-button type="submit" [disabled]="!todo.valid"><ion-icon name="help" slot="start"> </ion-icon>Forgot Password</ion-button>
+               <ion-button shape="round" block ion-button type="submit" [disabled]="!todo.valid"><ion-icon name="help" slot="start"> </ion-icon>Forgot Password</ion-button>
              </ion-col>
            </ion-row>
 
@@ -39,12 +39,12 @@
 
         <ion-row>
             <ion-col width-50 style="text-align: center">
-              <ion-button><ion-icon name="logo-facebook" slot="start"> </ion-icon>Login with Facebook</ion-button>
+              <ion-button color="facebook" shape="round"><ion-icon name="logo-facebook" slot="start"> </ion-icon>Login with Facebook</ion-button>
             </ion-col>
         </ion-row>
         <ion-row>
         <ion-col width-50 style="text-align: center">
-          <ion-button (click)="auth.googleLogin()"><ion-icon name="logo-googleplus" slot="start"> </ion-icon>Login with Google</ion-button>
+          <ion-button color="gp" shape="round" (click)="auth.googleLogin()"><ion-icon name="logo-googleplus" slot="start"> </ion-icon>Login with Google</ion-button>
         </ion-col>
         </ion-row>
 
@@ -58,7 +58,7 @@
 
         <ion-row>
         <ion-col width-50 style="text-align: center">
-        <ion-button [routerLink]="'/signup'" routerDirection="forward" ><ion-icon name="log-in" slot="start"> </ion-icon>Register</ion-button>
+        <ion-button shape="round" [routerLink]="'/signup'" routerDirection="forward" ><ion-icon name="log-in" slot="start"> </ion-icon>Register</ion-button>
         </ion-col>
         </ion-row>
       </ion-card>

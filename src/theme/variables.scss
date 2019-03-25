@@ -80,6 +80,22 @@ $font-family-wp-base: "Lato";
   --ion-color-light-shade: #d7d8da;
   --ion-color-light-tint: #f5f6f9;
 
+  /** facebook **/
+  --ion-color-facebook: #3171e0;
+  --ion-color-facebook-rgb: 49,	113	,224;
+  --ion-color-facebook-contrast: #ffffff;
+  --ion-color-facebook-contrast-rgb: 255, 255, 255;
+  --ion-color-facebook-shade: #3171e0;
+  --ion-color-facebook-tint: #4c8dff;
+
+  /** googleplus **/
+  --ion-color-gp: #d33939;
+  --ion-color-gp-rgb: 211,57,57;
+  --ion-color-gp-contrast: #ffffff;
+  --ion-color-gp-contrast-rgb: 255, 255, 255;
+  --ion-color-gp-shade: #f04141;
+  --ion-color-gp-tint: #f04141;
+
 }
 
 @font-face {
