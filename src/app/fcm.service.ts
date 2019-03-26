@@ -49,24 +49,30 @@ export class FcmService {
                 if(this.settings.currno){
                   console.log('subscribed');
                   this.firebase.subscribe("public");
+                }
+                if(this.settings.favno){
                   console.log(email);
                   this.firebase.subscribe(email);
                 }else{
-                  console.log('not subscribed');
-                  this.firebase.subscribe("public");
-                  console.log(email);
-                  this.firebase.subscribe(email);
                 }
               }
 
-              public ManualSub(email){
+              public ManualSubPublic(email){
                 this.firebase.subscribe("public");
+                console.log(email);
+              }
+
+              public ManualSubPriv(email){
                 console.log(email);
                 this.firebase.subscribe(email);
               }
 
-              public Manualunsub(email){
+              public ManualunsubPublic(email){
                 this.firebase.unsubscribe("public");
+                console.log(email);
+              }
+
+              public ManualunsubPriv(email){
                 console.log(email);
                 this.firebase.unsubscribe(email);
               }

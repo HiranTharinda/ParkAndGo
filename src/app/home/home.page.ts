@@ -170,7 +170,7 @@ export class HomePage implements OnInit {
                 console.log(resp);
                 this.lat = resp.coords.latitude;
                 this.lng = resp.coords.longitude;
-                this.privmarkers = this.db.locations(settings.currrad,mailsplit[mailsplit.length-1],this.lat,this.lng);
+                this.privmarkers = this.db.locations(settings.favrad,mailsplit[mailsplit.length-1],this.lat,this.lng);
                 this.pubmarkers = this.db.publocations(settings.currrad,this.lat,this.lng);
                 this.buildMap();
                 this.map.flyTo({
@@ -202,7 +202,7 @@ export class HomePage implements OnInit {
 
   changetype(newlocation){
     console.log(newlocation.target._lngLat);
-    this.privmarkers = this.db.locations(this.settings.currrad,this.mailsplit[this.mailsplit.length - 1],newlocation.target._lngLat.lat,newlocation.target._lngLat.lng);
+    this.privmarkers = this.db.locations(this.settings.favrad,this.mailsplit[this.mailsplit.length - 1],newlocation.target._lngLat.lat,newlocation.target._lngLat.lng);
     this.pubmarkers = this.db.publocations(this.settings.currrad,newlocation.target._lngLat.lat,newlocation.target._lngLat.lng);
 
     this.map.removeLayer('firebase');
@@ -221,6 +221,7 @@ export class HomePage implements OnInit {
        clusterMaxZoom: 14,
        clusterRadius: 50
     });
+
 
     this.map.addSource('firebase2', {
        type: 'geojson',
@@ -249,41 +250,50 @@ export class HomePage implements OnInit {
     })
 
     /// create map layers with realtime data
-    this.map.addLayer({
-      id: 'firebase',
-      source: 'firebase',
-      type: 'symbol',
-      layout: {
-        'text-field': '{ps}',
-        'text-size': 24,
-        'text-transform': 'uppercase',
-        'icon-image': 'car-15',
-        'text-offset': [0, 1.5]
-      },
-      paint: {
-        'text-color': '#f16624',
-        'text-halo-color': '#fff',
-        'text-halo-width': 2
-      }
-    })
 
-    this.map.addLayer({
-      id: 'firebase2',
-      source: 'firebase2',
-      type: 'symbol',
-      layout: {
-        'text-field': '{ps}',
-        'text-size': 24,
-        'text-transform': 'uppercase',
-        'icon-image': 'car-15',
-        'text-offset': [0, 1.5]
-      },
-      paint: {
-        'text-color': '#fd323f',
-        'text-halo-color': '#fff',
-        'text-halo-width': 2
-      }
-    })
+    if(this.settings.favshow){
+      this.map.addLayer({
+        id: 'firebase',
+        source: 'firebase',
+        type: 'symbol',
+        layout: {
+          'text-field': '{ps}',
+          'text-size': 24,
+          'text-transform': 'uppercase',
+          'icon-image': 'car-15',
+          'text-offset': [0, 1.5]
+        },
+        paint: {
+          'text-color': '#f16624',
+          'text-halo-color': '#fff',
+          'text-halo-width': 2
+        }
+      })
+    }
+    if(this.settings.currshow){
+      this.map.addLayer({
+        id: 'firebase2',
+        source: 'firebase2',
+        type: 'symbol',
+        layout: {
+          'text-field': '{ps}',
+          'text-size': 24,
+          'text-transform': 'uppercase',
+          'icon-image': 'car-15',
+          'text-offset': [0, 1.5]
+        },
+        paint: {
+          'text-color': '#fd323f',
+          'text-halo-color': '#fff',
+          'text-halo-width': 2
+        }
+      })
+    }
+
+
+
+
+
   }
 
   buildMap() {
@@ -358,41 +368,46 @@ export class HomePage implements OnInit {
           });
 
           /// create map layers with realtime data
-          this.map.addLayer({
-            id: 'firebase',
-            source: 'firebase',
-            type: 'symbol',
-            layout: {
-              'text-field': '{ps}',
-              'text-size': 24,
-              'text-transform': 'uppercase',
-              'icon-image': 'car-15',
-              'text-offset': [0, 1.5]
-            },
-            paint: {
-              'text-color': '#f16624',
-              'text-halo-color': '#fff',
-              'text-halo-width': 2
-            }
-          })
+          if(this.settings.favshow){
+            this.map.addLayer({
+              id: 'firebase',
+              source: 'firebase',
+              type: 'symbol',
+              layout: {
+                'text-field': '{ps}',
+                'text-size': 24,
+                'text-transform': 'uppercase',
+                'icon-image': 'car-15',
+                'text-offset': [0, 1.5]
+              },
+              paint: {
+                'text-color': '#f16624',
+                'text-halo-color': '#fff',
+                'text-halo-width': 2
+              }
+            })
+          }
 
-          this.map.addLayer({
-            id: 'firebase2',
-            source: 'firebase2',
-            type: 'symbol',
-            layout: {
-              'text-field': '{ps}',
-              'text-size': 24,
-              'text-transform': 'uppercase',
-              'icon-image': 'car-15',
-              'text-offset': [0, 1.5]
-            },
-            paint: {
-              'text-color': '#fd323f',
-              'text-halo-color': '#fff',
-              'text-halo-width': 2
-            }
-          })
+          if(this.settings.currshow){
+            this.map.addLayer({
+              id: 'firebase2',
+              source: 'firebase2',
+              type: 'symbol',
+              layout: {
+                'text-field': '{ps}',
+                'text-size': 24,
+                'text-transform': 'uppercase',
+                'icon-image': 'car-15',
+                'text-offset': [0, 1.5]
+              },
+              paint: {
+                'text-color': '#fd323f',
+                'text-halo-color': '#fff',
+                'text-halo-width': 2
+              }
+            })
+          }
+
 
           this.map.addLayer({
             id: 'gps',

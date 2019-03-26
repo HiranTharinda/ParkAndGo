@@ -46,9 +46,14 @@ export class SettingsPage implements OnInit {
     this.storage.set('currrad',this.currrad);
     this.storage.set('favrad',this.favrad);
     if(this.currno){
-      this.fcm.ManualSub(mailsplit);
+      this.fcm.ManualSubPublic(mailsplit);
     }else{
-      this.fcm.Manualunsub(mailsplit);
+      this.fcm.ManualunsubPublic(mailsplit);
+    }
+    if(this.favno){
+      this.fcm.ManualSubPriv(mailsplit);
+    }else{
+      this.fcm.ManualunsubPriv(mailsplit);
     }
   }
 

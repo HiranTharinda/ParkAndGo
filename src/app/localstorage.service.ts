@@ -68,7 +68,7 @@ export class LocalstorageService {
                       this.storage.get("currshow").then(res5=>{
                           res['currshow'] = res5;
                           this.storage.get("favshow").then(res6=>{
-                              res['currno'] = res6;
+                              res['favshow'] = res6;
                               resolve(res);
                           });
                       });
