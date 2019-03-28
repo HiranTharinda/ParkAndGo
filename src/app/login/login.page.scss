@@ -3,7 +3,17 @@
   box-shadow: none;
 }
 
+.customitem{
+  --background: #444;
+}
+.custominput{
+  --color : #fff;
+  --background : #444
+}
 
+.customlabel{
+  --color: #fff
+}
 .bar-profile{
   height:auto;
   padding-top: 15%;
