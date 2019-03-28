@@ -5,6 +5,7 @@ import { AngularFireAuth } from '@angular/fire/auth';
 import { AngularFirestore, AngularFirestoreDocument } from '@angular/fire/firestore';
 import { Router } from '@angular/router';
 
+
 class RouterStub {
     navigate(url: String) { return url}
 }
@@ -17,13 +18,16 @@ const FirestoreStub = {
       }),
     }),
   };
+
   const AngularFireMocks = {
-      auth: of({ uid: 'ABC123' })
+      auth: of({ uid: 'ABC123' }),
+      authState: of({ uid: 'ABC123' , email:'ranika@gmail.com' , displayName:'okay', photoURL:'/img.jpg', emailVerified:true})
   };
+
 describe('AuthServiceService', () => {
   beforeEach(() => TestBed.configureTestingModule({
-    providers: [ {provide : AngularFireAuth , useValue : FirestoreStub},
-    {provide : AngularFirestore , useValue : AngularFireMocks},
+    providers: [ {provide : AngularFireAuth , useValue : AngularFireMocks},
+    {provide : AngularFirestore , useValue : FirestoreStub},
   { provide: Router, useClass: RouterStub } ]
   }).compileComponents());
 
