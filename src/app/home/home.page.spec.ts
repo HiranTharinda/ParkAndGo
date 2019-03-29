@@ -51,10 +51,10 @@ describe('HomePage', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [ HomePage ],
-      providers:[{provide:AuthServiceService, userValue:AuthserviceMock},
-      {provide:DbService, userValue:dbservicemock},
-      {provide:LocalstorageService, userValue:localstorageMock},
-      {provide:Geolocation, userValue:geolocationmock}],
+      providers:[{provide:AuthServiceService, useValue:AuthserviceMock},
+      {provide:DbService, useValue:dbservicemock},
+      {provide:LocalstorageService, useValue:localstorageMock},
+      {provide:Geolocation, useValue:geolocationmock}],
       imports :[
         FormsModule,
         IonicModule,

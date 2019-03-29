@@ -9,6 +9,7 @@ import { LocalstorageService } from '../localstorage.service';
 import { Geolocation } from '@ionic-native/geolocation/ngx';
 import { LocationAccuracy } from '@ionic-native/location-accuracy/ngx';
 import { NativeGeocoder, NativeGeocoderReverseResult, NativeGeocoderForwardResult, NativeGeocoderOptions } from '@ionic-native/native-geocoder/ngx';
+import { AlertController } from '@ionic/angular';
 
 
 export interface IGeometry {
@@ -80,7 +81,7 @@ export class HomePage implements OnInit {
   timesentered = 0;
   searchbar: string;
 
-  constructor(private nativeGeocoder: NativeGeocoder, private locationAccuracy: LocationAccuracy, private auth : AuthServiceService, private db : DbService,private geolocation: Geolocation, private storage : LocalstorageService) {
+  constructor(private alertCtrl: AlertController,private nativeGeocoder: NativeGeocoder, private locationAccuracy: LocationAccuracy, private auth : AuthServiceService, private db : DbService,private geolocation: Geolocation, private storage : LocalstorageService) {
 
     mapboxgl.accessToken = environment.mapbox.accessToken
 
@@ -136,6 +137,9 @@ export class HomePage implements OnInit {
     });
   }
 
+  report(location,collection){
+    this.db.reportlocation(location,collection);
+  }
   private initializeMap(settings,mailsplit) {
     /// locate the user
 
@@ -296,6 +300,29 @@ export class HomePage implements OnInit {
 
   }
 
+  async sendnotification(id,collection){
+    const alert = await this.alertCtrl.create({
+    header: 'Confirm!',
+    message: 'Do  you wish to report this location',
+    buttons: [
+    {
+    text: 'Cancel',
+    role: 'cancel',
+    cssClass: 'secondary',
+    handler: (blah) => {
+      console.log('Confirm Cancel: blah');
+    }
+    }, {
+    text: 'Okay',
+    handler: () => {
+      this.report(id,collection)
+    }
+    }
+    ]
+    });
+        await alert.present();
+  }
+
   buildMap() {
     this.map = new mapboxgl.Map({
       container: 'map',
@@ -304,6 +331,18 @@ export class HomePage implements OnInit {
       center: [this.lng, this.lat]
     });
 
+
+        this.map.on('click', 'firebase', (e) => {
+          var coordinates = e.features[0].geometry.coordinates.slice();
+          var description = e.features[0].properties.id
+          this.sendnotification(description,'private')
+        });
+
+        this.map.on('click', 'firebase2', (e) => {
+            var coordinates = e.features[0].geometry.coordinates.slice();
+            var description = e.features[0].properties.id
+            this.sendnotification(description,'public')
+        });
 
     /// Add map controls
     this.map.addControl(new mapboxgl.NavigationControl());

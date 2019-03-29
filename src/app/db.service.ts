@@ -61,7 +61,30 @@ export class DbService {
     });
   }
 
-
+  reportlocation(locationid , collection){
+    /*const sfDocRef = this.afs.firestore.collection(collection).doc(locationid);
+    this.afs.firestore.runTransaction(transaction => {
+      return transaction.get(sfDocRef).then((sfDoc) => {
+            if (!sfDoc.exists) {
+                console.log("doc doesnt exist");
+            }
+            const initialreports = sfDoc.data().reports
+            if( initialreports == undefined){
+              const newPopulation = 1;
+              transaction.update(sfDocRef, { reports: newPopulation });
+            }else{
+              const newPopulation = sfDoc.data().reports + 1;
+              transaction.update(sfDocRef, { reports: newPopulation });
+            }
+        });
+    }).then(() => {
+        console.log("Transaction successfully committed!");
+    }).catch(error => {
+        console.log("Transaction failed: ", error);
+    });*/
+    this.afs.collection('reports').add({ location:locationid , time : Date.now()})
+  }
+  
   providesetttings(){
     return this.afs.collection('settings').doc<Settings>(this.user.uid);
   }

@@ -76,10 +76,10 @@ describe('AppComponent', () => {
         { provide: StatusBar, useValue: statusBarSpy },
         { provide: SplashScreen, useValue: splashScreenSpy },
         { provide: Platform, useValue: platformSpy },
-        {provide:AuthServiceService, userValue:AuthserviceMock},
-        {provide:LocalstorageService, userValue:localstorageMock},
+        {provide:AuthServiceService, useValue:AuthserviceMock},
+        {provide:LocalstorageService, useValue:localstorageMock},
         {provide :FcmService,useValue:fcmmock},
-        {provide:Geolocation, userValue:geolocationmock}
+        {provide:Geolocation, useValue:geolocationmock}
       ],
     }).compileComponents();
   }));
