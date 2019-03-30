@@ -9,7 +9,7 @@ import { AuthServiceService } from '../auth-service.service';
   styleUrls: ['./login.page.scss'],
 })
 export class LoginPage implements OnInit {
-  private todo : FormGroup;
+  todo : FormGroup;
 
 
   constructor(public auth: AuthServiceService, public toastCtrl: ToastController,public menu: MenuController,private formBuilder: FormBuilder) {

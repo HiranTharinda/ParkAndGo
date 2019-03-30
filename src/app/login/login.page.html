@@ -10,11 +10,11 @@
         <form [formGroup]="todo" (ngSubmit)="logForm()">
           <ion-item lines= "none">
             <ion-label position="floating" >Username</ion-label>
-            <ion-input  type="text" (ionBlur)="checkMail()" formControlName="email"></ion-input>
+            <ion-input id="email" type="text" (ionBlur)="checkMail()" formControlName="email"></ion-input>
           </ion-item>
           <ion-item lines= "none">
             <ion-label position="floating">Password</ion-label>
-            <ion-input  type="password" formControlName="password"></ion-input>
+            <ion-input id="password" type="password" formControlName="password"></ion-input>
           </ion-item>
 
            <ion-row>
@@ -57,7 +57,7 @@
 
         <ion-row>
         <ion-col width-50 style="text-align: center">
-        <ion-button style="--border-radius:0px;" [routerLink]="'/signup'" routerDirection="forward" ><ion-icon name="log-in" slot="start"> </ion-icon>Register</ion-button>
+        <ion-button id="signupbutton" style="--border-radius:0px;" [routerLink]="'/signup'" routerDirection="forward" ><ion-icon name="log-in" slot="start"> </ion-icon>Register</ion-button>
         </ion-col>
         </ion-row>
       </ion-card>

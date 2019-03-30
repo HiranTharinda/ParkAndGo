@@ -30,9 +30,10 @@ import {Geolocation} from '@ionic-native/geolocation/ngx';
 import { Firebase } from '@ionic-native/firebase/ngx';
 
 import { LocationAccuracy } from '@ionic-native/location-accuracy/ngx';
+import { MockComponent } from './mock/mock.component';
 
 @NgModule({
-  declarations: [AppComponent],
+  declarations: [AppComponent, MockComponent],
   entryComponents: [],
   imports: [BrowserModule,
     IonicModule.forRoot(),
