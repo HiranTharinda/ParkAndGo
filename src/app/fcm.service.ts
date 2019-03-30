@@ -44,7 +44,7 @@ export class FcmService {
                 return devicesRef.doc(token).set(data);
               }
 
-              private subscribetoParking(email){
+              subscribetoParking(email){
                 console.log(this.settings)
                 if(this.settings.currno){
                   console.log('subscribed');
