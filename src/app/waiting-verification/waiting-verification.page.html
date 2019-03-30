@@ -5,17 +5,17 @@
   </p>
   <ion-row>
       <ion-col width-50 style="text-align: center">
-        <ion-button (click)="auth.sendVerifciation()">Didn't Get an Email?</ion-button>
+        <ion-button id="verbutton" (click)="auth.sendVerifciation()">Didn't Get an Email?</ion-button>
       </ion-col>
   </ion-row>
  <ion-row>
   <ion-col width-50 style="text-align: center">
-    <ion-button (click)="backtoLogin()" >Try with Different Account</ion-button>
+    <ion-button id="trywithdiffbutton" (click)="backtoLogin()" >Try with Different Account</ion-button>
   </ion-col>
 </ion-row>
 <ion-row>
     <ion-col width-50 style="text-align: center">
-      <ion-button (click)="backtoLogin()">Done ?</ion-button>
+      <ion-button id="donebutton" (click)="backtoLogin()">Done ?</ion-button>
     </ion-col>
 </ion-row>
 
