@@ -12,7 +12,7 @@ import { AuthServiceService } from '../auth-service.service';
   styleUrls: ['./signup.page.scss'],
 })
 export class SignupPage implements OnInit {
-  private todo: FormGroup;
+  todo: FormGroup;
 
   constructor(public auth: AuthServiceService, public toastCtrl: ToastController,public menu: MenuController, private formBuilder: FormBuilder) {
     this.todo = this.formBuilder.group({
@@ -44,7 +44,7 @@ export class SignupPage implements OnInit {
   async checkPass(){
     if( !this.todo.controls.password.valid ){
       let toast = await this.toastCtrl.create({
-        message: 'Passwords dont match',
+        message: 'Password should contain 8 characters including atleast 1 letter number and 1 sybmol',
         duration: 3000,
         position: 'top',
         cssClass: 'custom-class'
@@ -53,7 +53,7 @@ export class SignupPage implements OnInit {
     }
     if( this.todo.value.password != this.todo.value.repassword){
       let toast = await this.toastCtrl.create({
-        message: 'Password should contain 8 characters including atleast 1 letter number and 1 sybmol',
+        message: 'Password do not match',
         duration: 3000,
         position: 'top',
         cssClass: 'custom-class'

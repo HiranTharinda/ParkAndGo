@@ -9,18 +9,18 @@
       <form [formGroup]="todo" (ngSubmit)="logForm()">
         <ion-item lines= "none">
           <ion-label position="floating" >Email</ion-label>
-          <ion-input (ionBlur)="checkMail()" type="text" formControlName="email"></ion-input>
+          <ion-input id="email" (ionBlur)="checkMail()" type="text" formControlName="email"></ion-input>
 
         </ion-item>
         <ion-item lines= "none">
           <ion-label position="floating">Password</ion-label>
-          <ion-input (ionBlur)="checkPass()" type="password" formControlName="password"></ion-input>
+          <ion-input id="password" (ionBlur)="checkPass()" type="password" formControlName="password"></ion-input>
 
         </ion-item>
 
         <ion-item lines= "none">
           <ion-label position="floating">Password verification</ion-label>
-          <ion-input  (ionBlur)="checkPass()" type="password" formControlName="repassword"></ion-input>
+          <ion-input  id="repassword" (ionBlur)="checkPass()" type="password" formControlName="repassword"></ion-input>
 
         </ion-item>
 
@@ -30,7 +30,7 @@
 
          <ion-row>
            <ion-col width-50 style="text-align: center">
-             <ion-button style="--border-radius:0px;" block ion-button type="submit"  [disabled]="!todo.valid"><ion-icon name="log-in" slot="start"> </ion-icon>Login</ion-button>
+             <ion-button id="submitbutton" style="--border-radius:0px;" block ion-button type="submit"  [disabled]="!todo.valid"><ion-icon name="log-in" slot="start"> </ion-icon>Login</ion-button>
            </ion-col>
          </ion-row>
 

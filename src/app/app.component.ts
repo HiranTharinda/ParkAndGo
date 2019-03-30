@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 
-import { Platform } from '@ionic/angular';
+import { MenuController, Platform } from '@ionic/angular';
 import { SplashScreen } from '@ionic-native/splash-screen/ngx';
 import { StatusBar } from '@ionic-native/status-bar/ngx';
 import { AuthServiceService } from './auth-service.service';
@@ -44,6 +44,7 @@ export class AppComponent {
   settings : any;
 
   constructor(
+    private menu : MenuController,
     private platform: Platform,
     private splashScreen: SplashScreen,
     private statusBar: StatusBar,
@@ -66,6 +67,10 @@ export class AppComponent {
     });
     toast.present();*/
     console.log(message);
+  }
+
+  closemenu(){
+    this.menu.close();
   }
 
   private notificationSetup(mail) {
