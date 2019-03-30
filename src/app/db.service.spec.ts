@@ -1,4 +1,4 @@
-import { TestBed } from '@angular/core/testing';
+import { TestBed , fakeAsync, tick, flushMicrotasks} from '@angular/core/testing';
 
 import { DbService } from './db.service';
 import { AngularFirestore, AngularFirestoreDocument } from '@angular/fire/firestore';
@@ -52,9 +52,10 @@ describe('DbService', () => {
     expect(service).toBeTruthy();
   });
 
-  it('should call signout when save method called', () => {
+  it('should call signout when save method called', fakeAsync(() => {
     service.user.uid = 'randomvalue';
     service.savesettings({random:'random'});
-    expect(spy2).toHaveBeenCalled();
-  });
+    flushMicrotasks();
+    expect(spy).toHaveBeenCalled();
+  }));
 });
