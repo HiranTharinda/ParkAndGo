@@ -15,7 +15,7 @@ const fcmmock = {
 const localstorageMock = {
   provide:() =>({
       then: () => {
-        return {currad:"5"}
+        return {currno:true}
       }
   }),
   set:(id:string,value:string)=> {console.log("set")}
@@ -30,6 +30,8 @@ const AuthserviceMock = {
 describe('SettingsPage', () => {
   let component: SettingsPage;
   let fixture: ComponentFixture<SettingsPage>;
+  let spy: jasmine.Spy;
+  let spy2 : jasmine.Spy;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -48,5 +50,21 @@ describe('SettingsPage', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('subsribe if option set', () => {
+    const local = TestBed.get(FcmService);
+    spy = spyOn(local,'ManualSubPublic').and.returnValue('done');
+    component.currno = true;
+    component.Save();
+    expect(spy).toHaveBeenCalled();
+  });
+
+  it('unsubsribe if option set', () => {
+    const local = TestBed.get(FcmService);
+    spy2 = spyOn(local,'ManualunsubPublic').and.returnValue('done');
+    component.currno = false;
+    component.Save();
+    expect(spy2).toHaveBeenCalled();
   });
 });

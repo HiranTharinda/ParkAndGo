@@ -140,7 +140,7 @@ export class HomePage implements OnInit {
   report(location,collection){
     this.db.reportlocation(location,collection);
   }
-  private initializeMap(settings,mailsplit) {
+  initializeMap(settings,mailsplit) {
     /// locate the user
 
     if (false) {

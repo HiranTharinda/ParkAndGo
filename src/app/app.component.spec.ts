@@ -1,5 +1,5 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { TestBed, async } from '@angular/core/testing';
+import { TestBed, async, fakeAsync, tick, flushMicrotasks } from '@angular/core/testing';
 
 import { Platform } from '@ionic/angular';
 import { SplashScreen } from '@ionic-native/splash-screen/ngx';
@@ -50,6 +50,8 @@ const localstorageMock = {
 }
 
 const fcmmock = {
+  getToken: (id:string)=> {console.log('subed priv')},
+  onNotifications: () => new BehaviorSubject({foo:"bar"}),
   ManualSubPriv:() => {console.log('subed priv')},
   ManualSubPublic:() => {console.log('subed pub')},
   ManualunsubPriv:() => {console.log('unsubed priv')},
@@ -60,6 +62,8 @@ const fcmmock = {
 describe('AppComponent', () => {
 
   let statusBarSpy, splashScreenSpy, platformReadySpy, platformSpy;
+  let spy : jasmine.Spy;
+  let spy2 : jasmine.Spy;
 
   beforeEach(async(() => {
     statusBarSpy = jasmine.createSpyObj('StatusBar', ['styleDefault']);
@@ -97,6 +101,18 @@ describe('AppComponent', () => {
     expect(statusBarSpy.styleDefault).toHaveBeenCalled();
     expect(splashScreenSpy.hide).toHaveBeenCalled();
   });
+
+  it('should subsribe to topics at start up', fakeAsync (() => {
+    const fixture = TestBed.createComponent(AppComponent);
+    const app = fixture.debugElement.componentInstance;
+    const geo = TestBed.get(FcmService);
+    spy = spyOn(app,'notificationSetup');
+    spy2 = spyOn(geo,'getToken');
+    expect(platformSpy.ready).toHaveBeenCalled();
+    flushMicrotasks();
+    expect(spy).toHaveBeenCalled();
+    expect(spy2).toHaveBeenCalled();
+  }));
 
   // TODO: add more tests!
 
