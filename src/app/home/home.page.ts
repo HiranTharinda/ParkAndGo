@@ -140,6 +140,10 @@ export class HomePage implements OnInit {
   report(location,collection){
     this.db.reportlocation(location,collection);
   }
+
+  delay(time:number){
+    return new Promise( resolve => setTimeout(resolve,time));
+  }
   initializeMap(settings,mailsplit) {
     /// locate the user
 
@@ -192,7 +196,7 @@ export class HomePage implements OnInit {
 
               })
             },
-            error => console.log('Error requesting location permissions', error)
+            (async (error) => { await this.delay(5000); this.initializeMap(settings,mailsplit)})
           );
         }
 
@@ -481,6 +485,7 @@ export class HomePage implements OnInit {
 
   flyTo(data: GeoJson) {
     this.map.flyTo({
+      offset : [100,0],
       center: data.geometry.coordinates
     })
   }

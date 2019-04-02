@@ -5,5 +5,15 @@
 }
 
 .over_map{
-  position: absolute; top: 10px; left: 10px; z-index: 99;
+  position: absolute; top: 210px; left: 10px; z-index: 99;
+}
+
+.inputitem {
+
+    --background: rgba(0,0,0,0);
+    --border-color: rgba(0,0,0,0);
+}
+
+.insideitem{
+  --border-radius : 15px;
 }

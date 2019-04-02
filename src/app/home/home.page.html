@@ -1,9 +1,11 @@
 
 <div class="map" id="map">
   <div class="over_map">
-    <ion-item>
+    <ion-item class="inputitem">
+      <ion-item class = "insideitem">
       <ion-input [(ngModel)]="searchbar" type="text" placeholder="Find Location" ></ion-input>
-      <ion-button clear item-right (click)="getResults()">Go To</ion-button>
+      </ion-item>
+      <ion-button style="--border-radius:15px;" 	size="default" clear item-right (click)="getResults()">Go To</ion-button>
     </ion-item>
 
    </div>
