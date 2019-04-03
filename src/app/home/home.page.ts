@@ -304,20 +304,20 @@ export class HomePage implements OnInit {
 
   }
 
-  async sendnotification(id,collection){
+  async sendnotification(id,collection,description){
     const alert = await this.alertCtrl.create({
-    header: 'Confirm!',
-    message: 'Do  you wish to report this location',
+    header: 'Info',
+    message: description,
     buttons: [
     {
-    text: 'Cancel',
+    text: 'OK',
     role: 'cancel',
     cssClass: 'secondary',
     handler: (blah) => {
       console.log('Confirm Cancel: blah');
     }
     }, {
-    text: 'Okay',
+    text: 'Report',
     handler: () => {
       this.report(id,collection)
     }
@@ -338,14 +338,16 @@ export class HomePage implements OnInit {
 
         this.map.on('click', 'firebase', (e) => {
           var coordinates = e.features[0].geometry.coordinates.slice();
-          var description = e.features[0].properties.id
-          this.sendnotification(description,'private')
+          var description = e.features[0].properties.id;
+          var info = e.features[0].properties.description;
+          this.sendnotification(description,'private',info)
         });
 
         this.map.on('click', 'firebase2', (e) => {
             var coordinates = e.features[0].geometry.coordinates.slice();
-            var description = e.features[0].properties.id
-            this.sendnotification(description,'public')
+            var description = e.features[0].properties.id;
+            var info = e.features[0].properties.description;
+            this.sendnotification(description,'public',info)
         });
 
     /// Add map controls

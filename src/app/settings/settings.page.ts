@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { LocalstorageService } from '../localstorage.service';
 import { FcmService } from '../fcm.service';
 import { AuthServiceService } from '../auth-service.service';
-
+import { AlertController } from '@ionic/angular';
 interface Settings{
   favno: boolean;
   currno : boolean;
@@ -26,7 +26,7 @@ export class SettingsPage implements OnInit {
   currrad = 5;
   favrad = 5;
   user : any;
-  constructor(private auth : AuthServiceService,public storage : LocalstorageService , public fcm : FcmService) {
+  constructor(private alertCtrl: AlertController, private auth : AuthServiceService,public storage : LocalstorageService , public fcm : FcmService) {
     this.Load();
     this.auth.user.subscribe( val => {
       this.user = val;
@@ -36,7 +36,34 @@ export class SettingsPage implements OnInit {
   ngOnInit() {
   }
 
-  Save(){
+  async forgotPassword(){
+    const alert = await this.alertCtrl.create({
+    header: 'Confirm',
+    message: 'Do you wish to request Password Reset',
+    buttons: [
+    {
+    text: 'No',
+    role: 'cancel',
+    cssClass: 'secondary',
+    handler: (blah) => {
+      console.log('Confirm Cancel: blah');
+    }
+    }, {
+    text: 'Yes',
+    handler: () => {
+      this.sendForgotPassword();
+    }
+    }
+    ]
+    });
+    await alert.present();
+  }
+
+  sendForgotPassword(){
+    this.auth.forgotpassword(this.user.email)
+  }
+
+  saves(){
     var mailsplitarray = this.user.email.split('@');
     var mailsplit = mailsplitarray[mailsplitarray.length -1]
     this.storage.set('favno',this.favno);
@@ -68,5 +95,29 @@ export class SettingsPage implements OnInit {
     });
 
   }
+
+  async Save(){
+      const alert = await this.alertCtrl.create({
+      header: 'Confirm',
+      message: 'Do you wish to save these settings',
+      buttons: [
+      {
+      text: 'No',
+      role: 'cancel',
+      cssClass: 'secondary',
+      handler: (blah) => {
+        console.log('Confirm Cancel: blah');
+      }
+      }, {
+      text: 'Yes',
+      handler: () => {
+        this.saves();
+      }
+      }
+      ]
+      });
+          await alert.present();
+    }
+
 
 }

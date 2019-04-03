@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import {Validators, FormBuilder, FormGroup } from '@angular/forms';
-
+import { AlertController } from '@ionic/angular';
 import { MenuController, IonSlides  , ToastController} from '@ionic/angular';
 import { AuthServiceService } from '../auth-service.service';
 @Component({
@@ -12,7 +12,7 @@ export class LoginPage implements OnInit {
   todo : FormGroup;
 
 
-  constructor(public auth: AuthServiceService, public toastCtrl: ToastController,public menu: MenuController,private formBuilder: FormBuilder) {
+  constructor(private alertCtrl: AlertController,public auth: AuthServiceService, public toastCtrl: ToastController,public menu: MenuController,private formBuilder: FormBuilder) {
     this.todo = this.formBuilder.group({
       email: ['', Validators.compose([Validators.required, Validators.pattern('^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+.[a-zA-Z0-9-.]+$')])],
       password: ['', Validators.required],
@@ -32,6 +32,34 @@ ionViewDidLeave() {
 
   ngOnInit() {
   }
+
+  async forgotPassword(){
+    const alert = await this.alertCtrl.create({
+    header: 'Confirm',
+    message: 'Do you wish to request Password Reset',
+    buttons: [
+    {
+    text: 'No',
+    role: 'cancel',
+    cssClass: 'secondary',
+    handler: (blah) => {
+      console.log('Confirm Cancel: blah');
+    }
+    }, {
+    text: 'Yes',
+    handler: () => {
+      this.sendForgotPassword();
+    }
+    }
+    ]
+    });
+    await alert.present();
+  }
+
+  sendForgotPassword(){
+    this.auth.forgotpassword(this.todo.value.email)
+  }
+
 
   logForm(){
     this.auth.emailLogin(this.todo.value.email, this.todo.value.password);

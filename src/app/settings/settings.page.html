@@ -10,14 +10,14 @@
       <ion-list>
         <ion-item>
           <ion-label>Email</ion-label>
-          <p>  ranikamadurawe@gmail.com </p>
+          <p>  {{user.email}} </p>
         </ion-item>
         <ion-item>
           <ion-label>Display Name</ion-label>
-          <p>  ranikamadurawe </p>
+          <p>  {{user.displayName}} </p>
         </ion-item>
         <ion-item>
-          <ion-button >Change Password</ion-button>
+          <ion-button (click)="forgotPassword()">Change Password</ion-button>
         </ion-item>
       </ion-list>
     </ion-card-content>

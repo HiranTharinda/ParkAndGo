@@ -57,6 +57,12 @@ export class AuthServiceService {
     return this.oAuthLogin(provider);
   }
 
+  forgotpassword(email){
+    this.afAuth.auth.sendPasswordResetEmail(email)
+    .then(() => this.showToast("Email sent please check your inbox"))
+    .catch((error) => this.showToast("No user account found for the email"))
+  }
+
   facebookLogin(){
 
   }
