@@ -9,7 +9,7 @@ import { LocalstorageService } from './localstorage.service';
 import { FcmService } from './fcm.service';
 import { LocalNotifications } from '@ionic-native/local-notifications/ngx';
 import { Geolocation } from '@ionic-native/geolocation/ngx';
-
+import { Network } from '@ionic-native/network/ngx';
 interface User {
   uid: string;
   email: string;
@@ -52,6 +52,7 @@ export class AppComponent {
     private auth : AuthServiceService,
     private storage : LocalstorageService,
     private geolocation: Geolocation,
+    private network: Network,
     private localNotifications: LocalNotifications
   ) {
     this.storage.provide().then(settings => {
@@ -120,7 +121,7 @@ export class AppComponent {
     this.platform.ready().then(() => {
       this.statusBar.styleDefault();
       this.splashScreen.hide();
-      this.auth.user.subscribe( val => {
+      this.network.onConnect().subscribe(() => {this.auth.user.subscribe( val => {
         this.user = val;
         this.notificationSetup(this.user.email);
         if(val == null ){
@@ -134,6 +135,8 @@ export class AppComponent {
           }
         }
       });
+    });
+
     });
   }
 }

@@ -5,7 +5,7 @@ import { SettingsPage } from './settings.page';
 import { LocalstorageService } from '../localstorage.service';
 import { FcmService } from '../fcm.service';
 import { AuthServiceService } from '../auth-service.service';
-
+import { AlertController } from '@ionic/angular';
 const fcmmock = {
   ManualSubPriv:() => {console.log('subed priv')},
   ManualSubPublic:() => {console.log('subed pub')},
@@ -53,18 +53,11 @@ describe('SettingsPage', () => {
   });
 
   it('subsribe if option set', () => {
-    const local = TestBed.get(FcmService);
-    spy = spyOn(local,'ManualSubPublic').and.returnValue('done');
+    const local = TestBed.get(AlertController);
+    spy = spyOn(local,'create').and.returnValue('done');
     component.currno = true;
     component.Save();
     expect(spy).toHaveBeenCalled();
   });
 
-  it('unsubsribe if option set', () => {
-    const local = TestBed.get(FcmService);
-    spy2 = spyOn(local,'ManualunsubPublic').and.returnValue('done');
-    component.currno = false;
-    component.Save();
-    expect(spy2).toHaveBeenCalled();
-  });
 });

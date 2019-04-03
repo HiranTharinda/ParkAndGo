@@ -15,6 +15,7 @@ import { Geolocation } from '@ionic-native/geolocation/ngx';
 import { of, BehaviorSubject} from 'rxjs';
 import { AngularFireAuth } from '@angular/fire/auth';
 import { AngularFirestore, AngularFirestoreDocument } from '@angular/fire/firestore';
+import { Network } from '@ionic-native/network/ngx';
 const FirestoreStub = {
     collection: (name: string) => ({
       doc: (_id: string) => ({
@@ -23,7 +24,9 @@ const FirestoreStub = {
       }),
     }),
   };
-
+  const NetworkStub = {
+      onConnect:()=> new BehaviorSubject({ foo: 'bar' })
+    };
   const AngularFireMocks = {
       auth: of({ uid: 'ABC123' }),
       authState: of({ uid: 'ABC123' , email:'ranika@gmail.com' , displayName:'okay', photoURL:'/img.jpg', emailVerified:true})
@@ -83,7 +86,8 @@ describe('AppComponent', () => {
         {provide:AuthServiceService, useValue:AuthserviceMock},
         {provide:LocalstorageService, useValue:localstorageMock},
         {provide :FcmService,useValue:fcmmock},
-        {provide:Geolocation, useValue:geolocationmock}
+        {provide:Geolocation, useValue:geolocationmock},
+        { provide:Network , useValue:NetworkStub}
       ],
     }).compileComponents();
   }));
