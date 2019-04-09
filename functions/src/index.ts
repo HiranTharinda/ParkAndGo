@@ -15,6 +15,7 @@ export const publicupdate = functions.firestore.document('public/{locationID}').
 
       const message = {
         data: {
+          type: 'public',
           hash : original.position.geohash,
           lat : original.position.geopoint._latitude.toString(),
           lng : original.position.geopoint._longitude.toString(),
@@ -41,6 +42,7 @@ if(originals){
       for(const i of original.dmn ){
         const message = {
           data: {
+            type: 'private',
             hash : original.position.geohash,
             lat : original.position.geopoint._latitude.toString(),
             lng : original.position.geopoint._longitude.toString(),

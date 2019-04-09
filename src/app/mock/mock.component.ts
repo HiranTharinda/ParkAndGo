@@ -7,6 +7,7 @@ import { Component, OnInit } from '@angular/core';
 })
 export class MockComponent implements OnInit {
 
+  // This function exists only to Mock Components during Unit testing
   constructor() { }
 
   ngOnInit() {

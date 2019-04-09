@@ -9,21 +9,22 @@ import { AuthServiceService } from '../auth-service.service';
 })
 export class WaitingVerificationPage implements OnInit {
 
-  constructor(public auth: AuthServiceService, public toastCtrl: ToastController,public menu: MenuController) { }
+  constructor(public auth: AuthServiceService, public toastCtrl: ToastController, public menu: MenuController) { }
 
   ngOnInit() {
   }
 
   ionViewWillEnter() {
+    // disable the root left menu when entering the verification page
     this.menu.enable(false);
   }
 
   ionViewDidLeave() {
-    // enable the root left menu when leaving the tutorial page
+    // enable the root left menu when leaving the verification page
     this.menu.enable(true);
   }
 
-  backtoLogin(){
+  backtoLogin() {
     this.auth.signOut();
   }
 

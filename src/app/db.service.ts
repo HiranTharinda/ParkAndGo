@@ -36,11 +36,11 @@ interface Settings{
 export class DbService {
 
   user: User = {
-    uid : "",
-    email : "",
-    photoURL : "",
-    displayName : "",
-    favoriteColor : "",
+    uid : '',
+    email : '',
+    photoURL : '',
+    displayName : '',
+    favoriteColor : '',
     emailVerified: false
   };
 
@@ -49,11 +49,11 @@ export class DbService {
       this.user = val;
       if(val == null ){
         this.user = {
-          uid : "",
-          email : "",
-          photoURL : "",
-          displayName : "",
-          favoriteColor : "",
+          uid : '',
+          email : '',
+          photoURL : '',
+          displayName : '',
+          favoriteColor : '',
           emailVerified: false
         }
       }
@@ -61,61 +61,40 @@ export class DbService {
     });
   }
 
-  reportlocation(locationid , collection){
-    /*const sfDocRef = this.afs.firestore.collection(collection).doc(locationid);
-    this.afs.firestore.runTransaction(transaction => {
-      return transaction.get(sfDocRef).then((sfDoc) => {
-            if (!sfDoc.exists) {
-                console.log("doc doesnt exist");
-            }
-            const initialreports = sfDoc.data().reports
-            if( initialreports == undefined){
-              const newPopulation = 1;
-              transaction.update(sfDocRef, { reports: newPopulation });
-            }else{
-              const newPopulation = sfDoc.data().reports + 1;
-              transaction.update(sfDocRef, { reports: newPopulation });
-            }
-        });
-    }).then(() => {
-        console.log("Transaction successfully committed!");
-    }).catch(error => {
-        console.log("Transaction failed: ", error);
-    });*/
-    this.afs.collection('reports').add({ location:locationid , time : Date.now()})
+  reportlocation(locationid , collection) {
+    this.afs.collection('reports').add({ location: locationid , time : Date.now()})
   }
-  
-  providesetttings(){
+
+  providesetttings() {
     return this.afs.collection('settings').doc<Settings>(this.user.uid);
   }
 
-  savesettings(settings){
+  savesettings(settings) {
     this.afs.collection('settings').doc(this.user.uid).set(settings).then(res => {
       this.auth.signOut();
     });
   }
 
-  locations(distance , mailserver , lat,lng){
+  // retrieve private locations within distance of given lat and lang
+  locations(distance , mailserver , lat, lng){
       const format = {};
-      const cities = geo.collection('private', ref=>ref.where("dmn", "array-contains",mailserver ))
-      const center = geo.point(lat,lng);
-      const radius = 100; // km
+      const cities = geo.collection('private', ref => ref.where("dmn", "array-contains",mailserver ))
+      const center = geo.point(lat, lng);
       const field = 'position';
       const query = cities.within(center, distance, field).pipe( toGeoJSON('position', true) );
       return query
 
   }
 
-  publocations(distance,lat,lng){
+  // retrieve public locations within distance of given lat and lang
+  publocations(distance, lat, lng){
 
       const cities = geo.collection('public')
-      const center = geo.point(lat,lng);
-      const radius = 100; // km
+      const center = geo.point(lat, lng);
       const field = 'position';
       const query = cities.within(center, distance, field).pipe( toGeoJSON('position', true) );
       return query
 
   }
-
 
 }

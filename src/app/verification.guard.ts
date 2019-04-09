@@ -12,6 +12,7 @@ import { tap, map, take } from 'rxjs/operators';
 export class VerificationGuard implements CanActivate {
   constructor(private auth: AuthServiceService, private router: Router) {}
 
+  // If user email not verified deactivate gaurd
   canActivate(
     next: ActivatedRouteSnapshot,
     state: RouterStateSnapshot): Observable<boolean>{

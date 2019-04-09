@@ -8,10 +8,10 @@ import { tap, map, take } from 'rxjs/operators';
 export class LoggedInGuard implements CanActivate {
     constructor(private auth: AuthServiceService, private router: Router) {}
 
+    // If user exists do not activate gaurd
     canActivate(
       next: ActivatedRouteSnapshot,
       state: RouterStateSnapshot): Observable<boolean>{
-
         return this.auth.user.pipe(
         take(1),
         map(user => !user),

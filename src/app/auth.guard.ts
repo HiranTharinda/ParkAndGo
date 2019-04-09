@@ -9,6 +9,7 @@ import { tap, map, take } from 'rxjs/operators';
 export class AuthGuard implements CanActivate {
     constructor(private auth: AuthServiceService, private router: Router) {}
 
+    // Allow to activate if authservice maintains a user instance
     canActivate(
       next: ActivatedRouteSnapshot,
       state: RouterStateSnapshot): Observable<boolean>{

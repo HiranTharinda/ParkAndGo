@@ -8,7 +8,8 @@ import { AuthServiceService } from '../auth-service.service';
 import { LocalstorageService } from '../localstorage.service';
 import { Geolocation } from '@ionic-native/geolocation/ngx';
 import { LocationAccuracy } from '@ionic-native/location-accuracy/ngx';
-import { NativeGeocoder, NativeGeocoderReverseResult, NativeGeocoderForwardResult, NativeGeocoderOptions } from '@ionic-native/native-geocoder/ngx';
+import { NativeGeocoder, NativeGeocoderReverseResult,
+   NativeGeocoderForwardResult, NativeGeocoderOptions } from '@ionic-native/native-geocoder/ngx';
 import { AlertController } from '@ionic/angular';
 
 
@@ -35,7 +36,7 @@ interface User {
   photoURL?: string;
   displayName?: string;
   favoriteColor?: string;
-  emailVerified?:boolean;
+  emailVerified?: boolean;
 }
 
 
@@ -61,27 +62,33 @@ export class HomePage implements OnInit {
   lat = 37.75;
   lng = -122.41;
   message = 'Hello World!';
-  centermarker : any;
+  centermarker: any;
   user: User = {
-    uid : "",
-    email : "",
-    photoURL : "",
-    displayName : "",
-    favoriteColor : "",
+    uid : '',
+    email : '',
+    photoURL : '',
+    displayName : '',
+    favoriteColor : '',
     emailVerified: false
   };
+  // Data sources for Public Locations and Private Locations
   source1: any;
-  source2:any;
-  gps:any;
+  source2: any;
+  gps: any;  // Data Source for GPS
+  // Markers for Map
   privmarkers: any;
-  pubmarkers:any;
-  settings:any;
-  mailsplit:any;
-  markerlocation:any;
+  pubmarkers: any;
+  // User settings
+  settings: any;
+  mailsplit: any;
+  markerlocation: any;
+  // Times entered into the Page
   timesentered = 0;
   searchbar: string;
 
-  constructor(private alertCtrl: AlertController,private nativeGeocoder: NativeGeocoder, private locationAccuracy: LocationAccuracy, private auth : AuthServiceService, private db : DbService,private geolocation: Geolocation, private storage : LocalstorageService) {
+  constructor(private alertCtrl: AlertController,private nativeGeocoder: NativeGeocoder,
+    private locationAccuracy: LocationAccuracy, private auth: AuthServiceService,
+    private db: DbService, private geolocation: Geolocation, private storage: LocalstorageService) {
 
     mapboxgl.accessToken = environment.mapbox.accessToken
 
@@ -108,11 +115,11 @@ export class HomePage implements OnInit {
       .catch((error: any) => console.log(error));
   }
 
-  ionViewWillEnter(){
+  ionViewWillEnter() {
     console.log('view will enter');
-    if(this.timesentered == 0){
+    if (this.timesentered == 0) {
         this.timesentered = 1
-    }else{
+    } else {
       this.storage.provide().then(settings => {
         this.settings = settings;
         this.changetype(this.markerlocation);
@@ -137,81 +144,66 @@ export class HomePage implements OnInit {
     });
   }
 
-  report(location,collection){
-    this.db.reportlocation(location,collection);
+  report(location, collection) {
+    this.db.reportlocation(location, collection);
   }
 
-  delay(time:number){
+  delay(time: number){
     return new Promise( resolve => setTimeout(resolve,time));
   }
-  initializeMap(settings,mailsplit) {
-    /// locate the user
+  initializeMap(settings, mailsplit) {
 
     if (false) {
-       console.log("using old");
-       navigator.geolocation.getCurrentPosition(position => {
-        this.lat = position.coords.latitude;
-        this.lng = position.coords.longitude;
-        this.privmarkers = this.db.locations(settings.currrad,mailsplit[mailsplit.length-1],this.lat,this.lng);
-        this.pubmarkers = this.db.publocations(settings.currrad,this.lat,this.lng);
-        this.buildMap();
-        this.map.flyTo({
-          center: [this.lng, this.lat]
-        })
-        this.centermarker = new mapboxgl.Marker({
-          draggable: true
-        }).setLngLat([this.lng, this.lat]).addTo(this.map);
-        this.centermarker.on('dragend', markerval => {
-          this.changetype(markerval);
-          this.markerlocation = markerval;
-        })
-
-      });
-    }else{
+        // Code base for Web App
+    } else {
+      // Check wether user has gps on
       this.locationAccuracy.canRequest().then((canRequest: boolean) => {
         console.log(canRequest);
-        if(canRequest) {
+        if ( canRequest ) {
           this.locationAccuracy.request(this.locationAccuracy.REQUEST_PRIORITY_HIGH_ACCURACY).then(
             () => {
+              // Get Current Location
               console.log('got permission');
               this.geolocation.getCurrentPosition().then((resp) => {
                 console.log(resp);
                 this.lat = resp.coords.latitude;
                 this.lng = resp.coords.longitude;
+                // Initialize Markers for public and private locations by gettind data from db
                 this.privmarkers = this.db.locations(settings.favrad,mailsplit[mailsplit.length-1],this.lat,this.lng);
                 this.pubmarkers = this.db.publocations(settings.currrad,this.lat,this.lng);
+                // Load Map
                 this.buildMap();
+                // Go to center
                 this.map.flyTo({
                   center: [this.lng, this.lat]
                 })
+                // Set different for user to drag and query location
                 this.centermarker = new mapboxgl.Marker({
                   draggable: true
                 }).setLngLat([this.lng, this.lat]).addTo(this.map);
+                // FInd new data from db and update layers from changetype function
                 this.centermarker.on('dragend', markerval => {
                   console.log(markerval)
                   this.changetype(markerval);
-                  this.markerlocation=markerval;
+                  this.markerlocation = markerval;
                 })
-
-
               })
             },
             (async (error) => { await this.delay(5000); this.initializeMap(settings,mailsplit)})
           );
         }
 
-      } , (err)=> {console.log(err)});
+      } , (err) => {console.log(err)});
     }
-
-
-
-
   }
 
+  // Much similar to build map function runs everytime we reopen this page to respond to settings changes made by user
+  // Also Act upon user querying different location and update layers
   changetype(newlocation){
     console.log(newlocation.target._lngLat);
-    this.privmarkers = this.db.locations(this.settings.favrad,this.mailsplit[this.mailsplit.length - 1],newlocation.target._lngLat.lat,newlocation.target._lngLat.lng);
-    this.pubmarkers = this.db.publocations(this.settings.currrad,newlocation.target._lngLat.lat,newlocation.target._lngLat.lng);
+    this.privmarkers = this.db.locations(this.settings.favrad, this.mailsplit[this.mailsplit.length - 1],
+      newlocation.target._lngLat.lat, newlocation.target._lngLat.lng);
+    this.pubmarkers = this.db.publocations(this.settings.currrad, newlocation.target._lngLat.lat, newlocation.target._lngLat.lng);
 
     this.map.removeLayer('firebase');
     this.map.removeSource('firebase');
@@ -230,7 +222,6 @@ export class HomePage implements OnInit {
        clusterRadius: 50
     });
 
-
     this.map.addSource('firebase2', {
        type: 'geojson',
        data: {
@@ -242,10 +233,9 @@ export class HomePage implements OnInit {
        clusterRadius: 50
     });
 
-    /// get source
     this.source1 = this.map.getSource('firebase');
     this.source2 = this.map.getSource('firebase2');
-    /// subscribe to realtime database and set data source
+
     this.privmarkers.subscribe(markers => {
         console.log(markers);
         let data = markers
@@ -256,8 +246,6 @@ export class HomePage implements OnInit {
         let data = markers
         this.source2.setData(data)
     })
-
-    /// create map layers with realtime data
 
     if(this.settings.favshow){
       this.map.addLayer({
@@ -297,34 +285,31 @@ export class HomePage implements OnInit {
         }
       })
     }
-
-
-
-
-
   }
 
-  async sendnotification(id,collection,description){
+  // Send Notification to Confirm Reporting of a location
+  async sendnotification(id, collection, description) {
     const alert = await this.alertCtrl.create({
-    header: 'Info',
-    message: description,
-    buttons: [
-    {
-    text: 'OK',
-    role: 'cancel',
-    cssClass: 'secondary',
-    handler: (blah) => {
-      console.log('Confirm Cancel: blah');
-    }
-    }, {
-    text: 'Report',
-    handler: () => {
-      this.report(id,collection)
-    }
-    }
-    ]
+      header: 'Info',
+      message: description,
+      buttons: [
+                {
+                  text: 'OK',
+                  role: 'cancel',
+                  cssClass: 'secondary',
+                  handler: (blah) => {
+                    console.log('Confirm Cancel: blah');
+                  }
+                },
+                {
+                  text: 'Report',
+                  handler: () => {
+                    this.report(id,collection)
+                  }
+                }
+              ]
     });
-        await alert.present();
+    await alert.present();
   }
 
   buildMap() {
@@ -335,14 +320,14 @@ export class HomePage implements OnInit {
       center: [this.lng, this.lat]
     });
 
-
+        // Add a click event to the public layer of the map
         this.map.on('click', 'firebase', (e) => {
           var coordinates = e.features[0].geometry.coordinates.slice();
           var description = e.features[0].properties.id;
           var info = e.features[0].properties.description;
           this.sendnotification(description,'private',info)
         });
-
+        // Add a click event to the private layer of the map
         this.map.on('click', 'firebase2', (e) => {
             var coordinates = e.features[0].geometry.coordinates.slice();
             var description = e.features[0].properties.id;
@@ -355,10 +340,7 @@ export class HomePage implements OnInit {
 
     this.map.on('load', (event) => {
 
-
-          // Add the geocoder to the map
-
-          /// register source
+          /// register the 3 sources public,private and gps to the map
           this.map.addSource('firebase', {
              type: 'geojson',
              data: {
@@ -392,17 +374,19 @@ export class HomePage implements OnInit {
           this.source1 = this.map.getSource('firebase');
           this.source2 = this.map.getSource('firebase2');
           this.gps = this.map.getSource('gps');
-          /// subscribe to realtime database and set data source
+          // assign private source
           this.privmarkers.subscribe(markers => {
               console.log(markers);
               let data = markers
               this.source1.setData(data)
           })
+          // assign the public source
           this.pubmarkers.subscribe(markers => {
               console.log(markers);
               let data = markers
               this.source2.setData(data)
           })
+          // assign the gps source
           this.geolocation.watchPosition().subscribe(data => {
               let pos = [data.coords.longitude,data.coords.latitude]
               let x = new GeoJson(pos);
@@ -412,7 +396,7 @@ export class HomePage implements OnInit {
               this.gps.setData(fc);
           });
 
-          /// create map layers with realtime data
+          // Add private source to the map
           if(this.settings.favshow){
             this.map.addLayer({
               id: 'firebase',
@@ -433,6 +417,7 @@ export class HomePage implements OnInit {
             })
           }
 
+          // Add public source to the map
           if(this.settings.currshow){
             this.map.addLayer({
               id: 'firebase2',
@@ -453,7 +438,7 @@ export class HomePage implements OnInit {
             })
           }
 
-
+          // Add gps source to the map
           this.map.addLayer({
             id: 'gps',
             source: 'gps',
@@ -474,17 +459,10 @@ export class HomePage implements OnInit {
 
         })
 
-
-
-    /// Add realtime firebase data on map load
-
-
   }
 
 
-  /// Helpers
-
-
+  /// Helper function to the Map flyto location
   flyTo(data: GeoJson) {
     this.map.flyTo({
       offset : [100,0],

@@ -10,20 +10,21 @@ import { FcmService } from './fcm.service';
 import { LocalNotifications } from '@ionic-native/local-notifications/ngx';
 import { Geolocation } from '@ionic-native/geolocation/ngx';
 import { Network } from '@ionic-native/network/ngx';
+
 interface User {
   uid: string;
   email: string;
   photoURL?: string;
   displayName?: string;
   favoriteColor?: string;
-  emailVerified?:boolean;
+  emailVerified?: boolean;
 }
 
 interface Row {
   id: string;
-  url : string;
-  lat : string;
-  lng : string;
+  url: string;
+  lat: string;
+  lng: string;
 }
 
 @Component({
@@ -34,23 +35,23 @@ interface Row {
 export class AppComponent {
 
   user: User = {
-    uid : "",
-    email : "",
-    photoURL : "",
-    displayName : "",
-    favoriteColor : "",
+    uid : '',
+    email : '',
+    photoURL : '',
+    displayName : '',
+    favoriteColor : '',
     emailVerified: false
   };
   settings : any;
 
   constructor(
-    private menu : MenuController,
+    private menu: MenuController,
     private platform: Platform,
     private splashScreen: SplashScreen,
     private statusBar: StatusBar,
     private fcm: FcmService,
-    private auth : AuthServiceService,
-    private storage : LocalstorageService,
+    private auth: AuthServiceService,
+    private storage: LocalstorageService,
     private geolocation: Geolocation,
     private network: Network,
     private localNotifications: LocalNotifications
@@ -61,12 +62,8 @@ export class AppComponent {
     this.initializeApp();
   }
 
-  private /*async*/ presentToast(message) {
-    /*const toast = await this.toastController.create({
-      message,
-      duration: 3000
-    });
-    toast.present();*/
+  private presentToast(message) {
+
     console.log(message);
   }
 
@@ -74,10 +71,15 @@ export class AppComponent {
     this.menu.close();
   }
 
+  // Setup notifications when loading up the application
   private notificationSetup(mail) {
+    // Find domain of the email
     var mailsplitarray = mail.split('@');
-    var mailsplit = mailsplitarray[mailsplitarray.length -1]
+    var mailsplit = mailsplitarray[mailsplitarray.length - 1];
+    // Pass data to fcm service to create notifications
     this.fcm.getToken(mailsplit);
+
+    // When recieving notifcations display it only if it is within the radius specified by the user
     this.fcm.onNotifications().subscribe(
       (msg) => {
         if (this.platform.is('ios')) {
@@ -86,33 +88,46 @@ export class AppComponent {
           console.log('msg recieved');
           console.log(msg)
           this.geolocation.getCurrentPosition().then((resp) => {
-            var distance = this.caldistance(resp.coords.latitude,resp.coords.longitude,msg.lat,msg.lng)
+            var distance = this.caldistance(resp.coords.latitude, resp.coords.longitude, msg.lat, msg.lng)
             console.log(distance)
-            if(distance < this.settings.currrad){
-              this.localNotifications.schedule({
-                id: 1,
-                text: 'New Location Pop up'
-              });
+            if(msg.type == 'public'){
+              if (distance < this.settings.currrad){
+                this.localNotifications.schedule({
+                  id: 1,
+                  text: 'New Public Location Updated'
+                });
+              }
+            }else if (msg.type == 'private'){
+              if (distance < this.settings.favrad){
+                this.localNotifications.schedule({
+                  id: 1,
+                  text: 'New Private Location Updated'
+                });
+              }
             }
+
           });
 
         }
       });
   }
+
+  // convert degrees to radians
   deg2rad(deg) {
    return deg * (Math.PI/180)
   }
 
-  caldistance(lat1,lon1,lat2,lon2){
+  // Calculate distance
+  caldistance(lat1, lon1, lat2, lon2){
     var R = 6371; // Radius of the earth in km
-    var dLat = this.deg2rad(lat2-lat1);  // deg2rad below
-    var dLon = this.deg2rad(lon2-lon1);
+    var dLat = this.deg2rad(lat2 - lat1);  // deg2rad below
+    var dLon = this.deg2rad(lon2 - lon1);
     var a =
-      Math.sin(dLat/2) * Math.sin(dLat/2) +
+      Math.sin(dLat / 2) * Math.sin(dLat / 2) +
       Math.cos(this.deg2rad(lat1)) * Math.cos(this.deg2rad(lat2)) *
-      Math.sin(dLon/2) * Math.sin(dLon/2)
+      Math.sin(dLon / 2) * Math.sin(dLon / 2)
       ;
-    var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+    var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt( 1 - a ));
     var d = R * c; // Distance in km
     return d;
   }
@@ -121,16 +136,17 @@ export class AppComponent {
     this.platform.ready().then(() => {
       this.statusBar.styleDefault();
       this.splashScreen.hide();
+      // Ensure network connection is available
       this.network.onConnect().subscribe(() => {this.auth.user.subscribe( val => {
         this.user = val;
         this.notificationSetup(this.user.email);
-        if(val == null ){
+        if ( val == null ) {
           this.user = {
-            uid : "",
-            email : "",
-            photoURL : "",
-            displayName : "",
-            favoriteColor : "",
+            uid : '',
+            email : '',
+            photoURL : '',
+            displayName : '',
+            favoriteColor : '',
             emailVerified: false
           }
         }

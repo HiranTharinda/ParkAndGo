@@ -31,7 +31,7 @@ export class AuthServiceService {
     public toastCtrl: ToastController
   ) {
 
-      //// Get auth data, then get firestore user document || null
+      //// Get auth data, then get store data or store null
       this.user = this.afAuth.authState.pipe(
         switchMap(user => {
           if (user) {
@@ -52,6 +52,7 @@ export class AuthServiceService {
   sendVerifciation(){
     this.afAuth.auth.currentUser.sendEmailVerification();
   }
+
   googleLogin() {
     const provider = new auth.GoogleAuthProvider()
     return this.oAuthLogin(provider);
@@ -102,9 +103,6 @@ export class AuthServiceService {
         this.router.navigate(['/home']);
       })
   }
-
-
-
 
   signOut() {
     this.afAuth.auth.signOut().then(() => {

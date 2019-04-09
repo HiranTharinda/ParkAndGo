@@ -8,13 +8,16 @@ import { LocalstorageService } from './localstorage.service';
   providedIn: 'root'
 })
 export class FcmService {
-  settings : any;
-  constructor(private storage : LocalstorageService,private firebase: Firebase,private afs: AngularFirestore,  private platform: Platform) {
-    this.storage.provide().then(settings => {
-      this.settings = settings;
-    })
-  }
 
+              settings: any;
+              constructor(private storage: LocalstorageService,private firebase: Firebase,private afs: AngularFirestore
+                ,  private platform: Platform) {
+                this.storage.provide().then(settings => {
+                  this.settings = settings;
+                })
+              }
+
+              // Get unique device token identifier
               async getToken(email) {
                 let token;
 
@@ -26,13 +29,13 @@ export class FcmService {
                   token = await this.firebase.getToken();
                   await this.firebase.grantPermission();
                 }
-
+                // Maintain token in db
                 this.saveToken(token);
                 this.subscribetoParking(email);
               }
 
               private saveToken(token) {
-                if (!token) return;
+                if (!token) { return } ;
 
                 const devicesRef = this.afs.collection('devices');
 
@@ -44,19 +47,21 @@ export class FcmService {
                 return devicesRef.doc(token).set(data);
               }
 
-              subscribetoParking(email){
+              // Subscribe to notifications depending on user settings when loading app
+              subscribetoParking(email) {
+                console.log('about to subsribe')
                 console.log(this.settings)
-                if(this.settings.currno){
+                if (this.settings.currno) {
                   console.log('subscribed');
                   this.firebase.subscribe("public");
                 }
-                if(this.settings.favno){
+                if (this.settings.favno) {
                   console.log(email);
                   this.firebase.subscribe(email);
-                }else{
                 }
               }
 
+              // User manually subscribes/unsubscribes to retrieve notifications
               public ManualSubPublic(email){
                 this.firebase.subscribe("public");
                 console.log(email);
