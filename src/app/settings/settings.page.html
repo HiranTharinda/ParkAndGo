@@ -31,7 +31,7 @@
     <ion-card-content>
       <ion-list>
         <ion-item>
-          <ion-label>Display Points near Current Location</ion-label>
+          <ion-label>Display Points near Public Location</ion-label>
           <ion-toggle [(ngModel)]="currshow"></ion-toggle>
         </ion-item>
         <ion-item >
@@ -39,7 +39,7 @@
           <ion-input style="text-align:right" type="number" [disabled] = "!currshow" [(ngModel)]="currrad"></ion-input>
         </ion-item>
         <ion-item>
-          <ion-label>Display Points near Current Location</ion-label>
+          <ion-label>Display Points near Private Location</ion-label>
           <ion-toggle [(ngModel)]="favshow"></ion-toggle>
         </ion-item>
         <ion-item >

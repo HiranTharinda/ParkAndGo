@@ -1,6 +1,7 @@
 import * as functions from 'firebase-functions';
 import * as admin from 'firebase-admin';
 admin.initializeApp();
+//import * as request from 'request';
 
 export const publicupdate = functions.firestore.document('public/{locationID}').onUpdate((event,context) => {
 // Grab the current value of what was written to the Realtime Database.
@@ -56,6 +57,17 @@ if(originals){
 
 });
 
+export const callme = functions.pubsub
+  .topic('getalldata')
+  .onPublish(async message => {
+      let count = 0;
+      admin.firestore().collection("public").stream().on('data', (documentSnapshot) => {
+        console.log('got function')
+        ++count;
+      }).on('end', () => {
+        console.log(count);
+      });
+  });
 
 // // Start writing Firebase Functions
 // // https://firebase.google.com/docs/functions/typescript
