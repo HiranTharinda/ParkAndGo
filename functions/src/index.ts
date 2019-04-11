@@ -64,16 +64,25 @@ export const callme = functions.pubsub
   .onPublish(async message => {
       let count = 0;
       admin.firestore().collection("public").stream().on('data', (documentSnapshot) => {
-        console.log('got function')
-        ++count;
+        let domainnames = documentSnapshot.get('url');
+        console.log(domainnames)
+        /*const d = (JSON.stringify(domainnames))
+        request.post(
+            'http://35.222.248.23:80/?url='+d,
+            { json: { urls: 'value' } },
+            function (error, response, body) {
+                console.log(response);
+                if (!error && response.statusCode == 200) {
+                    console.log(body);
+                }
+                else if(error){
+                  console.log(error)
+                }else if(response.statusCode != 200){
+                  console.log(response.statusCode)
+                }
+            }
+        );*/
       }).on('end', () => {
         console.log(count);
       });
   });
-
-// // Start writing Firebase Functions
-// // https://firebase.google.com/docs/functions/typescript
-//
-// export const helloWorld = functions.https.onRequest((request, response) => {
-//  response.send("Hello from Firebase!");
-// });
