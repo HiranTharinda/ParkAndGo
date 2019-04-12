@@ -58,6 +58,10 @@ export class AuthServiceService {
     return this.oAuthLogin(provider);
   }
 
+  nonetwork(){
+    this.showToast("Internet Connection Lost some functionality might be unavailable")
+  }
+
   forgotpassword(email){
     this.afAuth.auth.sendPasswordResetEmail(email)
     .then(() => this.showToast("Email sent please check your inbox"))
@@ -88,7 +92,7 @@ export class AuthServiceService {
 
   async showToast(error){
     let toast = await this.toastCtrl.create({
-      message: error.message,
+      message: error,
       duration: 3000,
       position: 'top',
       cssClass: 'custom-class'

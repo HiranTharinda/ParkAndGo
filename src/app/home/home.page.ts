@@ -11,6 +11,7 @@ import { LocationAccuracy } from '@ionic-native/location-accuracy/ngx';
 import { NativeGeocoder, NativeGeocoderReverseResult,
    NativeGeocoderForwardResult, NativeGeocoderOptions } from '@ionic-native/native-geocoder/ngx';
 import { AlertController } from '@ionic/angular';
+import { Network } from '@ionic-native/network/ngx';
 
 
 export interface IGeometry {
@@ -58,6 +59,7 @@ export class GeoJson implements IGeoJson {
 })
 export class HomePage implements OnInit {
   map: mapboxgl.Map;
+  mapInitialized= false;
   style = 'mapbox://styles/mapbox/outdoors-v9';
   lat = 37.75;
   lng = -122.41;
@@ -86,7 +88,7 @@ export class HomePage implements OnInit {
   timesentered = 0;
   searchbar: string;
 
-  constructor(private alertCtrl: AlertController,private nativeGeocoder: NativeGeocoder,
+  constructor(private network: Network,private alertCtrl: AlertController,private nativeGeocoder: NativeGeocoder,
     private locationAccuracy: LocationAccuracy, private auth: AuthServiceService,
     private db: DbService, private geolocation: Geolocation, private storage: LocalstorageService) {
 
@@ -137,10 +139,25 @@ export class HomePage implements OnInit {
     this.auth.user.subscribe( val => {
       this.user = val;
       this.mailsplit = this.user.email.split('@');
-      this.storage.provide().then(settings => {
-        this.settings = settings;
-        this.initializeMap(settings,this.mailsplit);
-      })
+      // When running the first time if network has not been connected do not initialize map
+      if(this.network.type != 'none'){
+        console.log("network is "+this.network.type);
+        this.storage.provide().then(settings => {
+          this.settings = settings;
+          this.initializeMap(settings,this.mailsplit);
+        })
+      }
+      // If connected to network and map has not been initialized already initialize
+      this.network.onConnect().subscribe(()=>{
+        console.log("got connection "+this.network.type);
+        if(this.mapInitialized == false){
+          this.storage.provide().then(settings => {
+            this.settings = settings;
+            this.initializeMap(settings,this.mailsplit);
+          })
+        }
+      });
+
     });
   }
 
@@ -339,7 +356,7 @@ export class HomePage implements OnInit {
     this.map.addControl(new mapboxgl.NavigationControl());
 
     this.map.on('load', (event) => {
-
+          this.mapInitialized = true;
           /// register the 3 sources public,private and gps to the map
           this.map.addSource('firebase', {
              type: 'geojson',

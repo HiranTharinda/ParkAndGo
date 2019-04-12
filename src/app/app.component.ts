@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-
+import { take } from 'rxjs/operators';
 import { MenuController, Platform } from '@ionic/angular';
 import { SplashScreen } from '@ionic-native/splash-screen/ngx';
 import { StatusBar } from '@ionic-native/status-bar/ngx';
@@ -137,7 +137,29 @@ export class AppComponent {
       this.statusBar.styleDefault();
       this.splashScreen.hide();
       // Ensure network connection is available
-      this.network.onConnect().subscribe(() => {this.auth.user.subscribe( val => {
+      console.log(this.network.type)
+      if(this.network.type == 'none' || this.network.type == undefined ){
+        this.auth.nonetwork();
+      }else{
+        this.auth.user.pipe(take(1)).subscribe( val => {
+          this.user = val;
+          this.notificationSetup(this.user.email);
+          if ( val == null ) {
+            this.user = {
+              uid : '',
+              email : '',
+              photoURL : '',
+              displayName : '',
+              favoriteColor : '',
+              emailVerified: false
+            }
+          }
+        });
+      }
+      this.network.onDisconnect().subscribe( () => {
+        this.auth.nonetwork();
+      });
+      this.network.onConnect().subscribe(() => {this.auth.user.pipe(take(1)).subscribe( val => {
         this.user = val;
         this.notificationSetup(this.user.email);
         if ( val == null ) {
