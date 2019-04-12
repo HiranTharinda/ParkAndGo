@@ -11,7 +11,7 @@ const routes: Routes = [
   { path: 'login', loadChildren: './login/login.module#LoginPageModule', canActivate: [LoggedInGuard] },
   { path: 'signup', loadChildren: './signup/signup.module#SignupPageModule' },
   { path: 'settings', loadChildren: './settings/settings.module#SettingsPageModule' },
-  { path: 'editprofile', loadChildren: './editprofile/editprofile.module#EditprofilePageModule' },
+  { path: 'help', loadChildren: './editprofile/editprofile.module#EditprofilePageModule' },
   { path: 'waiting-verification', loadChildren: './waiting-verification/waiting-verification.module#WaitingVerificationPageModule' },
 ];
 

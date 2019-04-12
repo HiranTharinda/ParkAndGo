@@ -1,9 +1,30 @@
-<ion-header>
-  <ion-toolbar>
-    <ion-title>editprofile</ion-title>
-  </ion-toolbar>
-</ion-header>
 
 <ion-content padding>
 
+  <h2>Help</h2>
+
+  <ion-list *ngFor="let item of questions; let i= index;" class='accordion-list' lines="none" detail="false" no-padding>
+    <ion-item tappable (click)="toggleSelection(i)" [ngClass]="{'section-active':item.o , 'section':!item.o}">
+        <ion-label text-wrap>{{item.q}}</ion-label>
+    </ion-item>
+
+    <div style="margin-top:10px;" *ngIf="item.o" [@enterAnimation]>
+          <ion-item>
+            {{item.a}}
+          </ion-item>
+      </div>
+  </ion-list>
+
+  <h2>Contact Details</h2>
+  <ion-list>
+    <ion-item>
+        Contact Number : 011-111-1111
+    </ion-item>
+    <ion-item>
+        Head Office : 69/96, Legitimate Street, Real City, Sri Lanka
+    </ion-item>
+    <ion-item>
+        Email : parkandgo@gmail.com
+    </ion-item>
+  </ion-list>
 </ion-content>

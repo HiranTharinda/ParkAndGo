@@ -1,0 +1,18 @@
+.accordion-list{
+  margin-bottom: 4px;
+
+  .section .section-active{
+    --min-height:50px;
+  }
+}
+
+.section-active{
+  font-weight: 600;
+  --ion-item-background:#16E5E2;
+  --border-radius: 5px;
+}
+
+.section{
+  font-weight: 600;
+  --ion-item-background:#fff;
+}
