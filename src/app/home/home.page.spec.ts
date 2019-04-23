@@ -1,6 +1,6 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed ,fakeAsync, tick , flushMicrotasks} from '@angular/core/testing';
-
+import { Network } from '@ionic-native/network/ngx';
 import { HomePage } from './home.page';
 
 import { DbService } from '../db.service';
@@ -31,7 +31,10 @@ const AuthserviceMock = {
     sendVerification:() => { console.log('vertification sent')},
     emailLogin:() => {console.log('logged in request recieved')}
 };
-
+const NetworkStub = {
+    onConnect:()=> new BehaviorSubject({ foo: 'bar' }),
+    onDisconnect:()=> new BehaviorSubject({ foo: 'bar' })
+  };
 const localstorageMock = {
   provide:() =>({
       then: () => {
@@ -65,7 +68,9 @@ describe('HomePage', () => {
       {provide:DbService, useValue:dbservicemock},
       {provide:LocationAccuracy, useValue:locationmock},
       {provide:LocalstorageService, useValue:localstorageMock},
-      {provide:Geolocation, useValue:geolocationmock}],
+      {provide:Geolocation, useValue:geolocationmock},
+      { provide:Network , useValue:NetworkStub}
+    ],
       imports :[
         FormsModule,
         IonicModule,
@@ -88,11 +93,5 @@ describe('HomePage', () => {
     expect(component).toBeTruthy();
   }));
 
-  it('should build the map', fakeAsync(() => {
-    spy = spyOn(component,'buildMap');
-    component.map = mapmock;
-    component.initializeMap({currad:8},'@gmail.com');
-    flushMicrotasks();
-    expect(spy).toHaveBeenCalled();
-  }));
+
 });

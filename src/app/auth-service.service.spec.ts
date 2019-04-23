@@ -57,7 +57,8 @@ describe('AuthServiceService', () => {
     })
   });
 
-  it('should load user if he already logged in' , () => {
+  //Will have null if no one has logged in
+  it('should store null if no user' , () => {
     TestBed.overrideProvider(AngularFireAuth, {useValue: AngularFireMocks2});
     service =   TestBed.get(AuthServiceService);
     afauth = TestBed.get(AngularFireAuth);

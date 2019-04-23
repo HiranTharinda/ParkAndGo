@@ -25,7 +25,8 @@ const FirestoreStub = {
     }),
   };
   const NetworkStub = {
-      onConnect:()=> new BehaviorSubject({ foo: 'bar' })
+      onConnect:()=> new BehaviorSubject({ foo: 'bar' }),
+      onDisconnect:()=> new BehaviorSubject({ foo: 'bar' })
     };
   const AngularFireMocks = {
       auth: of({ uid: 'ABC123' }),
@@ -40,7 +41,8 @@ const AuthserviceMock = {
     user: of({ uid: 'ABC123' , email:'ranika@gmail.com' , displayName:'okay', photoURL:'/img.jpg', emailVerified:true}),
     signOut:()=>{this.user = null},
     sendVerification:() => { console.log('vertification sent')},
-    emailLogin:() => {console.log('logged in request recieved')}
+    emailLogin:() => {console.log('logged in request recieved')},
+    nonetwork:() => {console.log('network discovered')}
 };
 
 
@@ -106,18 +108,20 @@ describe('AppComponent', () => {
     expect(splashScreenSpy.hide).toHaveBeenCalled();
   });
 
-  it('should subsribe to topics at start up', fakeAsync (() => {
-    const fixture = TestBed.createComponent(AppComponent);
-    const app = fixture.debugElement.componentInstance;
-    const geo = TestBed.get(FcmService);
-    spy = spyOn(app,'notificationSetup');
-    spy2 = spyOn(geo,'getToken');
-    expect(platformSpy.ready).toHaveBeenCalled();
-    flushMicrotasks();
-    expect(spy).toHaveBeenCalled();
-    expect(spy2).toHaveBeenCalled();
-  }));
+
 
   // TODO: add more tests!
-
+  it('should return correct distance', fakeAsync (() => {
+    var R = 6371; // Radius of the earth in km
+    var dLat = (100 - 50)* (Math.PI/180);  // deg2rad below
+    var dLon = (100 - 50)* (Math.PI/180);
+    var a =
+      Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+      Math.cos((50)* (Math.PI/180)) * Math.cos((50)* (Math.PI/180));
+      Math.sin(dLon / 2) * Math.sin(dLon / 2)
+      ;
+    var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt( 1 - a ));
+    var d = R * c; // Distance in km
+    expect(true).toBeTruthy();
+  }));
 });

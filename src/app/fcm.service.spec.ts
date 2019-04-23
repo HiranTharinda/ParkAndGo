@@ -60,7 +60,7 @@ describe('FcmService', () => {
     expect(spy2).not.toHaveBeenCalled();
   });
 
-  it('subscribe if settings say so', () => {
+  it('not subscribe if settings say so', () => {
     service.settings = {currno:false,favno:false}
     service.subscribetoParking('me');
     expect(spy1).not.toHaveBeenCalled();
