@@ -161,8 +161,8 @@ export class HomePage implements OnInit {
     });
   }
 
-  report(location, collection) {
-    this.db.reportlocation(location, collection);
+  report(location, collection , issue) {
+    this.db.reportlocation(location, collection ,issue);
   }
 
   delay(time: number){
@@ -321,13 +321,68 @@ export class HomePage implements OnInit {
                 {
                   text: 'Report',
                   handler: () => {
-                    this.report(id,collection)
+                    this.reportalert(id,collection,description);
                   }
                 }
               ]
     });
     await alert.present();
   }
+
+  async reportalert(id, collection, description) {
+    const alert = await this.alertCtrl.create({
+      header: 'Report Location',
+      message: 'Please enter a description of the issue',
+      inputs: [
+      {
+        name: 'issue',
+        placeholder:'Write the issue'
+      }
+      ],
+      buttons: [
+                {
+                  text: 'Cancel',
+                  role: 'cancel',
+                  cssClass: 'secondary',
+                  handler: (blah) => {
+                    console.log('Confirm Cancel: blah');
+                  }
+                },
+                {
+                  text: 'Report',
+                  handler: (data) => {
+                    this.finalconfirmation(id,collection,data.issue)
+                  }
+                }
+              ]
+    });
+    await alert.present();
+  }
+
+  async finalconfirmation(id, collection, description) {
+    const alert = await this.alertCtrl.create({
+      header: 'Confirm',
+      message: 'Are you sure you want to report?',
+      buttons: [
+                {
+                  text: 'No',
+                  role: 'cancel',
+                  cssClass: 'secondary',
+                  handler: (blah) => {
+                    console.log('Confirm Cancel: blah');
+                  }
+                },
+                {
+                  text: 'Yes',
+                  handler: () => {
+                    this.report(id,collection,description);
+                  }
+                }
+              ]
+    });
+    await alert.present();
+  }
+
 
   buildMap() {
     this.map = new mapboxgl.Map({

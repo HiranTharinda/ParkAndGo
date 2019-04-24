@@ -61,8 +61,8 @@ export class DbService {
     });
   }
 
-  reportlocation(locationid , collection) {
-    this.afs.collection('reports').add({ location: locationid , time : Date.now()})
+  reportlocation(locationid , collection, issue) {
+    this.afs.collection('reports').add({ location: locationid , time : Date.now() , reason : issue})
   }
 
   providesetttings() {
