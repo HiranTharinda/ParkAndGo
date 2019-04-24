@@ -62,7 +62,8 @@ export class DbService {
   }
 
   reportlocation(locationid , collection, issue) {
-    this.afs.collection('reports').add({ location: locationid , time : Date.now() , reason : issue})
+    this.afs.collection('reports').doc(locationid).collection('reportlist')
+    .add({ reportedby : this.user.uid, locationid : locationid,time : Date.now(), reason:issue})
   }
 
   providesetttings() {
