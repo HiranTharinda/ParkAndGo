@@ -9,6 +9,7 @@ import * as geofirex from 'geofirex';
 import { toGeoJSON } from 'geofirex'
 const geo = geofirex.init(firebase);
 import { switchMap } from 'rxjs/operators';
+import { ToastController} from '@ionic/angular';
 
 interface User {
   uid: string;
@@ -44,7 +45,7 @@ export class DbService {
     emailVerified: false
   };
 
-  constructor(private afs : AngularFirestore, private auth : AuthServiceService) {
+  constructor(public toastCtrl: ToastController,private afs : AngularFirestore, private auth : AuthServiceService) {
     this.auth.user.subscribe( val => {
       this.user = val;
       if(val == null ){
@@ -62,8 +63,22 @@ export class DbService {
   }
 
   reportlocation(locationid , collection, issue) {
-    this.afs.collection('reports').doc(locationid).collection('reportlist')
-    .add({ reportedby : this.user.uid, locationid : locationid,time : Date.now(), reason:issue})
+    this.afs.collection('reports').doc(locationid).collection('reportlist').doc(this.user.uid)
+    .set({ time : Date.now(), reason:issue}).then(resp => {
+      this.showToast('Issue Posted. We will look into it')
+    }).catch(error => {
+      this.showToast("Seems like you have already reported this location");
+    });
+  }
+
+  async showToast(error){
+    let toast = await this.toastCtrl.create({
+      message: error,
+      duration: 3000,
+      position: 'top',
+      cssClass: 'custom-class'
+    });
+    toast.present();
   }
 
   providesetttings() {
