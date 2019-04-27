@@ -8,6 +8,7 @@ import { SignupPage } from './signup.page';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { IonicModule } from '@ionic/angular';
 import { RouterTestingModule } from '@angular/router/testing';
+import { GooglePlus } from '@ionic-native/google-plus/ngx';
 import {  ToastController } from '@ionic/angular';
 import { By } from '@angular/platform-browser';
 import { AngularFirestoreModule } from '@angular/fire/firestore';
@@ -32,7 +33,7 @@ describe('SignupPage', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
 
-      providers:[AuthServiceService,
+      providers:[AuthServiceService,GooglePlus,
       ToastController],
       declarations: [ SignupPage ],
       imports :[

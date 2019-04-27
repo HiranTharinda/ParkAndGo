@@ -10,7 +10,7 @@ import { AngularFireModule } from '@angular/fire';
 import { AngularFireAuthModule } from '@angular/fire/auth';
 import { environment } from '../../environments/environment';
 import { RouterTestingModule } from '@angular/router/testing';
-
+import { GooglePlus } from '@ionic-native/google-plus/ngx';
 describe('WaitingVerificationPage', () => {
   let component: WaitingVerificationPage;
   let fixture: ComponentFixture<WaitingVerificationPage>;
@@ -21,7 +21,7 @@ describe('WaitingVerificationPage', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      providers:[AuthServiceService],
+      providers:[AuthServiceService,GooglePlus],
       declarations: [ WaitingVerificationPage ],
       imports :[
           RouterTestingModule,

@@ -1,5 +1,5 @@
 import { TestBed, async, inject, fakeAsync, tick } from '@angular/core/testing';
-
+import { GooglePlus } from '@ionic-native/google-plus/ngx';
 import { VerificationGuard } from './verification.guard';
 import { of, Observable } from 'rxjs';
 import { AuthServiceService} from './auth-service.service';
@@ -33,7 +33,7 @@ describe('VerificationGuard', () => {
               AngularFirestoreModule,
             RouterTestingModule.withRoutes([{ path: 'home', component : MockComponent },{ path: 'waiting-verification', component : MockComponent }])
           ],
-      providers: [VerificationGuard, AuthServiceService],
+      providers: [GooglePlus,VerificationGuard, AuthServiceService],
     }).compileComponents();
   }));
 

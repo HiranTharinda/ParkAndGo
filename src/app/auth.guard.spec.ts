@@ -11,7 +11,7 @@ import { MockComponent } from './mock/mock.component';
 import { Location } from '@angular/common';
 import {  Router, RouterOutlet, RouterLinkWithHref} from '@angular/router';
 import { TestBed, async, inject, fakeAsync, tick } from '@angular/core/testing';
-
+import { GooglePlus } from '@ionic-native/google-plus/ngx';
 
 
 describe('AuthGuard', () => {
@@ -30,7 +30,7 @@ describe('AuthGuard', () => {
               AngularFirestoreModule,
             RouterTestingModule.withRoutes([{ path: 'home', component : MockComponent },{ path: 'login', component : MockComponent }])
           ],
-      providers: [AuthGuard, AuthServiceService],
+      providers: [GooglePlus,AuthGuard, AuthServiceService],
     }).compileComponents();
   }));
 

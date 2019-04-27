@@ -18,6 +18,7 @@ import { AngularFireModule } from '@angular/fire';
 import { AngularFireAuthModule } from '@angular/fire/auth';
 import { environment } from '../../environments/environment';
 import { MockComponent } from '../mock/mock.component';
+import { GooglePlus } from '@ionic-native/google-plus/ngx';
 
 class Toast{
   present(){
@@ -40,7 +41,7 @@ describe('LoginPage', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       providers:[AuthServiceService,
-      ToastController],
+      ToastController, GooglePlus],
       imports :[
         FormsModule,
         IonicModule,
