@@ -3,6 +3,39 @@ import * as admin from 'firebase-admin';
 admin.initializeApp();
 //import * as request from 'request';
 
+export const pubreport = functions.firestore.document('pubreports/{locationID}/reportlist/{reportid}').onCreate((snapshot,context) => {
+// Grab the current value of what was written to the Realtime Database.
+  const locid = context.params.locationID;
+  const docref = admin.firestore().collection('public').doc(locid);
+  docref.update({ rb: admin.firestore.FieldValue.increment(1) }).then(()=> {console.log('done')}).catch(error => console.log(error))
+
+});
+
+export const privreport = functions.firestore.document('privreports/{locationID}/reportlist/{reportid}').onCreate((snapshot,context) => {
+// Grab the current value of what was written to the Realtime Database.
+  const locid = context.params.locationID;
+  const docref = admin.firestore().collection('private').doc(locid);
+  docref.update({ rb: admin.firestore.FieldValue.increment(1) }).then(()=> {console.log('done')}).catch(error => console.log(error))
+
+});
+
+export const pubreportdelete = functions.firestore.document('pubreports/{locationID}/reportlist/{reportid}').onDelete((snapshot,context) => {
+// Grab the current value of what was written to the Realtime Database.
+  const locid = context.params.locationID;
+  const docref = admin.firestore().collection('public').doc(locid);
+  docref.update({ rb: admin.firestore.FieldValue.increment(-1) }).then(()=> {console.log('done')}).catch(error => console.log(error))
+
+});
+
+export const privreportdelete = functions.firestore.document('privreports/{locationID}/reportlist/{reportid}').onCreate((snapshot,context) => {
+// Grab the current value of what was written to the Realtime Database.
+  const locid = context.params.locationID;
+  const docref = admin.firestore().collection('private').doc(locid);
+  docref.update({ rb: admin.firestore.FieldValue.increment(-1) }).then(()=> {console.log('done')}).catch(error => console.log(error))
+
+});
+
+
 export const publicupdate = functions.firestore.document('public/{locationID}').onUpdate((event,context) => {
 // Grab the current value of what was written to the Realtime Database.
   const originals = event.after;

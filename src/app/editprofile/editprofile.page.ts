@@ -28,7 +28,8 @@ export class EditprofilePage implements OnInit {
   { q : 'I Cannot see a private parking spot that is available to me what should I do?' , a: 'Private parking spots are made available through private email domains Check again to see wether you are logged in with a private email domain', o:false},
   { q : 'How do I stop Notifications for nearby parking spots' , a: 'Notifications only arrive when the app is open or in the background. You can easily toggle these settings in the Settings Page', o:false},
   { q : 'How do post a new private location' , a: 'Posting new locations is only available if you are a registered customer. Please contact our nearest office for more information', o:false},
-  { q : 'A location I went to does not have any parking what do I do' , a: 'Please report the location by clicking on the marker. We will immediatly contact the owner and make clarifications', o:false}]
+  { q : 'A location I went to does not have any parking what do I do' , a: 'If there was only a very limited amount of parking spaces when you First saw the location on the map Chances are that another person perhaps not even using ParkAndGo took the place. If so we do apologize for the inconvinence. If the Marker does not locate to a Parking Lot please Report the area. We will look into it.', o:false},
+  { q : 'How Do I report a Location ?' , a: 'Simply click on the marker and proceed to Report the location', o:false}]
   constructor() { }
 
   ngOnInit() {

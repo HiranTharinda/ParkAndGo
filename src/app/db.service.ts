@@ -63,12 +63,25 @@ export class DbService {
   }
 
   reportlocation(locationid , collection, issue) {
-    this.afs.collection('reports').doc(locationid).collection('reportlist').doc(this.user.uid)
-    .set({ time : Date.now(), reason:issue}).then(resp => {
-      this.showToast('Issue Posted. We will look into it')
-    }).catch(error => {
-      this.showToast("Seems like you have already reported this location");
-    });
+    if(collection == 'private'){
+      this.afs.collection('privreports').doc(locationid).collection('reportlist').doc(this.user.uid)
+      .set({ time : Date.now(), reason:issue})
+      .then( res => {
+        this.showToast('Posted report');
+      })
+      .catch(error => {
+        this.showToast("Seems like you have already reported this location")
+      });
+    }else{
+      this.afs.collection('pubreports').doc(locationid).collection('reportlist').doc(this.user.uid)
+      .set({ time : Date.now(), reason:issue})
+      .then( res => {
+        this.showToast('Posted report');
+      })
+      .catch(error => {
+        this.showToast("Seems like you have already reported this location")
+      });
+    }
   }
 
   async showToast(error){

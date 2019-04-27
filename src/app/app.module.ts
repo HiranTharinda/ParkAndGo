@@ -14,7 +14,7 @@ import { AngularFireAuthModule } from '@angular/fire/auth';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { AgmCoreModule } from '@agm/core';
 import { AuthServiceService } from './auth-service.service';
-
+import { GooglePlus } from '@ionic-native/google-plus/ngx';
 import { LoggedInGuard } from './loggedin.guard';
 import { AuthGuard } from './auth.guard';
 import { VerificationGuard } from './verification.guard';
@@ -48,6 +48,7 @@ import { MockComponent } from './mock/mock.component';
   providers: [
     StatusBar,
     SplashScreen,
+    GooglePlus,
     AuthServiceService ,
     AuthGuard,
     DbService,

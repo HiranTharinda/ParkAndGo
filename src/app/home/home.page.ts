@@ -305,10 +305,10 @@ export class HomePage implements OnInit {
   }
 
   // Send Notification to Confirm Reporting of a location
-  async sendnotification(id, collection, description) {
+  async sendnotification(id, collection, description,reportno) {
     const alert = await this.alertCtrl.create({
       header: 'Info',
-      message: description,
+      message: description+'\n'+'Reports on this location : '+reportno,
       buttons: [
                 {
                   text: 'OK',
@@ -397,14 +397,16 @@ export class HomePage implements OnInit {
           var coordinates = e.features[0].geometry.coordinates.slice();
           var description = e.features[0].properties.id;
           var info = e.features[0].properties.description;
-          this.sendnotification(description,'private',info)
+          var rn = e.features[0].properties.rb;
+          this.sendnotification(description,'private',info,rn)
         });
         // Add a click event to the private layer of the map
         this.map.on('click', 'firebase2', (e) => {
             var coordinates = e.features[0].geometry.coordinates.slice();
             var description = e.features[0].properties.id;
             var info = e.features[0].properties.description;
-            this.sendnotification(description,'public',info)
+            var rn = e.features[0].properties.rb;
+            this.sendnotification(description,'public',info,rn)
         });
 
     /// Add map controls

@@ -1,12 +1,13 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
-
+import { GooglePlus } from '@ionic-native/google-plus/ngx';
 import { auth } from 'firebase/app';
 import { AngularFireAuth } from '@angular/fire/auth';
 import { AngularFirestore, AngularFirestoreDocument } from '@angular/fire/firestore';
 import { ToastController} from '@ionic/angular';
 import { Observable, of } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
+import * as firebase from 'firebase/app';
 
 interface User {
   uid: string;
@@ -25,6 +26,7 @@ export class AuthServiceService {
   user: Observable<User>;
 
   constructor(
+    private gplus: GooglePlus,
     private afAuth: AngularFireAuth,
     private afs: AngularFirestore,
     private router: Router,
@@ -54,8 +56,25 @@ export class AuthServiceService {
   }
 
   googleLogin() {
-    const provider = new auth.GoogleAuthProvider()
-    return this.oAuthLogin(provider);
+    this.loggoo()
+  }
+
+  async loggoo(){
+    try {
+      console.log('this shit runs');
+      const gplusUser = await this.gplus.login({
+        'webClientId': '320215829065-p31tecv30i8ttac4u65uhn7um9qgl2vn.apps.googleusercontent.com',
+        'offline': true,
+        'scopes': 'profile email'
+      })
+
+      this.afAuth.auth.signInWithCredential(firebase.auth.GoogleAuthProvider.credential(gplusUser.idToken)).then( token => {
+        this.router.navigate(['/home']);
+      })
+
+    } catch(err) {
+      console.log(err)
+    }
   }
 
   nonetwork(){
