@@ -308,7 +308,7 @@ export class HomePage implements OnInit {
   async sendnotification(id, collection, description,reportno) {
     const alert = await this.alertCtrl.create({
       header: 'Info',
-      message: description+'\n'+'Reports on this location : '+reportno,
+      message: '<p>'+description+' </p> <br /><p> Reports on this location : '+reportno+'</p>',
       buttons: [
                 {
                   text: 'OK',

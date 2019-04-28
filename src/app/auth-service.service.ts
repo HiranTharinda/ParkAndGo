@@ -96,7 +96,7 @@ export class AuthServiceService {
     this.afAuth.auth.signInWithEmailAndPassword(email, password).then( token => {
       this.router.navigate(['/home']);
     }).catch(error => {
-      this.showToast(error);
+      this.showToast("Wrong Username or Password, or User doesn't exist");
     });
   }
 
