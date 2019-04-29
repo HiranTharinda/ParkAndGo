@@ -26,12 +26,15 @@ const locationmock = {
 }
 
 const AuthserviceMock = {
-    user: of({ uid: 'ABC123' , email:'ranika@gmail.com' , displayName:'okay', photoURL:'/img.jpg', emailVerified:true}),
+    getuser:() => ({
+      subscribe:() => {console.log('got user')}
+    }),
     signOut:()=>{this.user = null},
     sendVerification:() => { console.log('vertification sent')},
     emailLogin:() => {console.log('logged in request recieved')}
 };
 const NetworkStub = {
+    type : 'WiFi',
     onConnect:()=> new BehaviorSubject({ foo: 'bar' }),
     onDisconnect:()=> new BehaviorSubject({ foo: 'bar' })
   };
@@ -60,6 +63,9 @@ describe('HomePage', () => {
   let component: HomePage;
   let fixture: ComponentFixture<HomePage>;
   let spy: jasmine.Spy;
+  let service;
+  let compspy : jasmine.Spy;
+  let storspy : jasmine.Spy;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -92,6 +98,22 @@ describe('HomePage', () => {
   it('should create', async(() => {
     expect(component).toBeTruthy();
   }));
+
+  it('should intializemap when network present' ,fakeAsync(() => {
+    service = TestBed.get(AuthServiceService)
+    var storage = TestBed.get(LocalstorageService);
+    spy = spyOn(service, 'getuser').and.returnValue(of({email:'rnisalm@gmail.com'}))
+    storspy = spyOn(storage,'provide').and.returnValue(new Promise( (resolve,reject) => resolve({foo:'bar'})));
+    compspy = spyOn(component, 'initializeMap');
+    component.ngOnInit();
+
+    flushMicrotasks();
+    fixture.detectChanges();
+    expect(spy).toHaveBeenCalled();
+    expect(storspy).toHaveBeenCalled();
+    expect(compspy).toHaveBeenCalled();
+  }));
+
 
 
 });

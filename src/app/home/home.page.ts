@@ -136,13 +136,14 @@ export class HomePage implements OnInit {
 
   ngOnInit(): void {
     console.log('ng on init')
-    this.auth.user.subscribe( val => {
+    this.auth.getuser().subscribe( val => {
       this.user = val;
       this.mailsplit = this.user.email.split('@');
       // When running the first time if network has not been connected do not initialize map
       if(this.network.type != 'none'){
         console.log("network is "+this.network.type);
         this.storage.provide().then(settings => {
+          console.log('storage');
           this.settings = settings;
           this.initializeMap(settings,this.mailsplit);
         })

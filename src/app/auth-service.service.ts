@@ -59,6 +59,10 @@ export class AuthServiceService {
     this.loggoo()
   }
 
+  getuser(){
+    return this.user;
+  }
+
   async loggoo(){
     try {
       console.log('this shit runs');
