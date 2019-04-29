@@ -27,7 +27,7 @@ export const pubreportdelete = functions.firestore.document('pubreports/{locatio
 
 });
 
-export const privreportdelete = functions.firestore.document('privreports/{locationID}/reportlist/{reportid}').onCreate((snapshot,context) => {
+export const privreportdelete = functions.firestore.document('privreports/{locationID}/reportlist/{reportid}').onDelete((snapshot,context) => {
 // Grab the current value of what was written to the Realtime Database.
   const locid = context.params.locationID;
   const docref = admin.firestore().collection('private').doc(locid);
