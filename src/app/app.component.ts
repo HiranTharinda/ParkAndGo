@@ -67,6 +67,14 @@ export class AppComponent {
     console.log(message);
   }
 
+  logout(){
+    var mailsplitarray =this.user.email.split('@');
+    var mailsplit = mailsplitarray[mailsplitarray.length - 1];
+    this.fcm.ManualunsubPublic(mailsplit);
+    this.fcm.ManualunsubPriv(mailsplit);
+    this.storage.savetodb();
+  }
+
   closemenu(){
     this.menu.close();
   }
@@ -77,6 +85,7 @@ export class AppComponent {
     var mailsplitarray = mail.split('@');
     var mailsplit = mailsplitarray[mailsplitarray.length - 1];
     // Pass data to fcm service to create notifications
+    console.log(mailsplit)
     this.fcm.getToken(mailsplit);
 
     // When recieving notifcations display it only if it is within the radius specified by the user
@@ -141,9 +150,8 @@ export class AppComponent {
       if(this.network.type == 'none' || this.network.type == undefined ){
         this.auth.nonetwork();
       }else{
-        this.auth.user.pipe(take(1)).subscribe( val => {
-          this.user = val;
-          this.notificationSetup(this.user.email);
+        this.auth.user.subscribe( val => {
+          console.log('got user');
           if ( val == null ) {
             this.user = {
               uid : '',
@@ -154,14 +162,26 @@ export class AppComponent {
               emailVerified: false
             }
           }
+          if(val != null){
+            this.user = val;
+            this.notificationSetup(this.user.email);
+
+          }
+
         });
       }
       this.network.onDisconnect().subscribe( () => {
         this.auth.nonetwork();
       });
-      this.network.onConnect().subscribe(() => {this.auth.user.pipe(take(1)).subscribe( val => {
-        this.user = val;
-        this.notificationSetup(this.user.email);
+      this.network.onConnect().pipe(take(1)).subscribe(() => {this.auth.user.subscribe( val => {
+        console.log('oh no')
+
+        if(val != null){
+          this.user = val;
+          this.notificationSetup(this.user.email);
+
+        }
+
         if ( val == null ) {
           this.user = {
             uid : '',
