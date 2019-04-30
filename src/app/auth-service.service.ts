@@ -8,6 +8,7 @@ import { ToastController} from '@ionic/angular';
 import { Observable, of } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 import * as firebase from 'firebase/app';
+import { Facebook } from '@ionic-native/facebook/ngx'
 
 interface User {
   uid: string;
@@ -30,6 +31,7 @@ export class AuthServiceService {
     private afAuth: AngularFireAuth,
     private afs: AngularFirestore,
     private router: Router,
+    public facebook: Facebook,
     public toastCtrl: ToastController
   ) {
 
@@ -92,7 +94,17 @@ export class AuthServiceService {
   }
 
   facebookLogin(){
+    this.facebook.login(['public_profile', 'user_friends', 'email'])
+        .then( response => {
+          const facebookCredential = firebase.auth.FacebookAuthProvider
+            .credential(response.authResponse.accessToken);
 
+          this.afAuth.auth.signInWithCredential(facebookCredential)
+            .then( success => {
+              this.router.navigate(['/home']);
+            });
+
+        }).catch((error) => { console.log(error) });
   }
 
   emailLogin(email, password){

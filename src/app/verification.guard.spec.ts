@@ -11,6 +11,7 @@ import { environment } from '../environments/environment';
 import { RouterTestingModule } from '@angular/router/testing';
 import { MockComponent } from './mock/mock.component';
 import { Location } from '@angular/common';
+import { Facebook } from '@ionic-native/facebook/ngx'
 import {  Router, RouterOutlet, RouterLinkWithHref} from '@angular/router';
 /*const AuthserviceMock = {
     user: of({ uid: 'ABC123' , email:'ranika@gmail.com' , displayName:'okay', photoURL:'/img.jpg', emailVerified:true})
@@ -33,7 +34,7 @@ describe('VerificationGuard', () => {
               AngularFirestoreModule,
             RouterTestingModule.withRoutes([{ path: 'home', component : MockComponent },{ path: 'waiting-verification', component : MockComponent }])
           ],
-      providers: [GooglePlus,VerificationGuard, AuthServiceService],
+      providers: [Facebook,GooglePlus,VerificationGuard, AuthServiceService],
     }).compileComponents();
   }));
 

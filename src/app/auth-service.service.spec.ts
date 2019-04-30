@@ -5,12 +5,17 @@ import { AngularFireAuth } from '@angular/fire/auth';
 import { AngularFirestore, AngularFirestoreDocument } from '@angular/fire/firestore';
 import { Router } from '@angular/router';
 import { GooglePlus } from '@ionic-native/google-plus/ngx';
+import { Facebook } from '@ionic-native/facebook/ngx'
 
 class RouterStub {
     navigate(url: String) { return url}
 }
 
 const gpstub = {
+  login: ()=> {console.log('token')}
+}
+
+const fbstub = {
   login: ()=> {console.log('token')}
 }
 
@@ -42,7 +47,8 @@ describe('AuthServiceService', () => {
     providers: [ {provide : AngularFireAuth , useValue : AngularFireMocks},
     {provide : AngularFirestore , useValue : FirestoreStub},
   { provide: Router, useClass: RouterStub }
-  , {  provide : GooglePlus , useValue : gpstub}]
+  , {  provide : GooglePlus , useValue : gpstub},
+    {provide : Facebook, useValue : fbstub}]
   }).compileComponents());
 
 

@@ -94,5 +94,11 @@
     <plugin name="cordova-plugin-googleplus" spec="7.0.1">
         <variable name="PLAY_SERVICES_VERSION" value="15.+" />
     </plugin>
+    <plugin name="cordova-plugin-facebook4" spec="4.2.1">
+        <variable name="APP_ID" value="467216837351218" />
+        <variable name="APP_NAME" value="ParkAndGo" />
+        <variable name="FACEBOOK_HYBRID_APP_EVENTS" value="false" />
+        <variable name="FACEBOOK_ANDROID_SDK_VERSION" value="4.40.0" />
+    </plugin>
     <engine name="android" spec="^7.1.4" />
 </widget>

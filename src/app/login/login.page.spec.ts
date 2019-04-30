@@ -1,6 +1,6 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed , fakeAsync, tick} from '@angular/core/testing';
-
+import { Facebook } from '@ionic-native/facebook/ngx'
 import { LoginPage } from './login.page';
 import { Observable } from 'rxjs/Observable';
 import { of } from 'rxjs';
@@ -40,7 +40,7 @@ describe('LoginPage', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      providers:[AuthServiceService,
+      providers:[Facebook,AuthServiceService,
       ToastController, GooglePlus],
       imports :[
         FormsModule,

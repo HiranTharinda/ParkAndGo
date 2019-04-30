@@ -12,7 +12,7 @@ import { Location } from '@angular/common';
 import {  Router, RouterOutlet, RouterLinkWithHref} from '@angular/router';
 import { TestBed, async, inject, fakeAsync, tick } from '@angular/core/testing';
 import { GooglePlus } from '@ionic-native/google-plus/ngx';
-
+import { Facebook } from '@ionic-native/facebook/ngx'
 
 
 describe('LoggedInGuard', () => {
@@ -31,7 +31,7 @@ describe('LoggedInGuard', () => {
               AngularFirestoreModule,
             RouterTestingModule.withRoutes([{ path: 'home', component : MockComponent },{ path: 'login', component : MockComponent }])
           ],
-      providers: [GooglePlus,LoggedInGuard, AuthServiceService],
+      providers: [Facebook,GooglePlus,LoggedInGuard, AuthServiceService],
     }).compileComponents();
   }));
 

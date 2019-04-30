@@ -18,7 +18,7 @@ import { GooglePlus } from '@ionic-native/google-plus/ngx';
 import { LoggedInGuard } from './loggedin.guard';
 import { AuthGuard } from './auth.guard';
 import { VerificationGuard } from './verification.guard';
-
+import { Facebook } from '@ionic-native/facebook/ngx'
 import { IonicStorageModule } from '@ionic/storage';
 
 import { environment } from '../environments/environment';
@@ -49,6 +49,7 @@ import { MockComponent } from './mock/mock.component';
     StatusBar,
     SplashScreen,
     GooglePlus,
+    Facebook,
     AuthServiceService ,
     AuthGuard,
     DbService,

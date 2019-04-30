@@ -14,6 +14,7 @@ import { By } from '@angular/platform-browser';
 import { AngularFirestoreModule } from '@angular/fire/firestore';
 import { AngularFireModule } from '@angular/fire';
 import { AngularFireAuthModule } from '@angular/fire/auth';
+import { Facebook } from '@ionic-native/facebook/ngx'
 import { environment } from '../../environments/environment';
 class Toast{
   present(){
@@ -33,7 +34,7 @@ describe('SignupPage', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
 
-      providers:[AuthServiceService,GooglePlus,
+      providers:[Facebook,AuthServiceService,GooglePlus,
       ToastController],
       declarations: [ SignupPage ],
       imports :[
