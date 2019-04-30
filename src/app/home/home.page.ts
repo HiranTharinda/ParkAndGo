@@ -87,6 +87,8 @@ export class HomePage implements OnInit {
   // Times entered into the Page
   timesentered = 0;
   searchbar: string;
+  tempbool = true;
+  alreadysubed = false;
 
   constructor(private network: Network,private alertCtrl: AlertController,private nativeGeocoder: NativeGeocoder,
     private locationAccuracy: LocationAccuracy, private auth: AuthServiceService,
@@ -130,9 +132,6 @@ export class HomePage implements OnInit {
 
   }
 
-  ionViewDidLeave(){
-    console.log('view did leave');
-  }
 
   ngOnInit(): void {
     console.log('ng on init')
@@ -149,15 +148,20 @@ export class HomePage implements OnInit {
         })
       }
       // If connected to network and map has not been initialized already initialize
-      this.network.onConnect().subscribe(()=>{
-        console.log("got connection "+this.network.type);
-        if(this.mapInitialized == false){
-          this.storage.provide().then(settings => {
-            this.settings = settings;
-            this.initializeMap(settings,this.mailsplit);
-          })
-        }
-      });
+      else{
+        this.alreadysubed = true;
+        this.network.onConnect().subscribe(()=>{
+          console.log("got connection "+this.network.type);
+          if(this.mapInitialized == false){
+            this.storage.provide().then(settings => {
+              this.settings = settings;
+              this.initializeMap(settings,this.mailsplit);
+            })
+          }
+        });
+      }
+
+
 
     });
   }
@@ -187,24 +191,41 @@ export class HomePage implements OnInit {
                 this.lat = resp.coords.latitude;
                 this.lng = resp.coords.longitude;
                 // Initialize Markers for public and private locations by gettind data from db
-                this.privmarkers = this.db.locations(settings.favrad,mailsplit[mailsplit.length-1],this.lat,this.lng);
-                this.pubmarkers = this.db.publocations(settings.currrad,this.lat,this.lng);
-                // Load Map
-                this.buildMap();
-                // Go to center
-                this.map.flyTo({
-                  center: [this.lng, this.lat]
-                })
-                // Set different for user to drag and query location
-                this.centermarker = new mapboxgl.Marker({
-                  draggable: true
-                }).setLngLat([this.lng, this.lat]).addTo(this.map);
-                // FInd new data from db and update layers from changetype function
-                this.centermarker.on('dragend', markerval => {
-                  console.log(markerval)
-                  this.changetype(markerval);
-                  this.markerlocation = markerval;
-                })
+                if(this.network.type != 'none' || !this.tempbool){
+                  this.privmarkers = this.db.locations(settings.favrad,mailsplit[mailsplit.length-1],this.lat,this.lng);
+                  this.pubmarkers = this.db.publocations(settings.currrad,this.lat,this.lng);
+                  // Load Map
+                  this.buildMap();
+                  // Go to center
+                  if(this.tempbool){
+                    this.map.flyTo({
+                      center: [this.lng, this.lat]
+                    })
+                    // Set different for user to drag and query location
+                    this.centermarker = new mapboxgl.Marker({
+                      draggable: true
+                    }).setLngLat([this.lng, this.lat]).addTo(this.map);
+                    // FInd new data from db and update layers from changetype function
+                    this.centermarker.on('dragend', markerval => {
+                      console.log(markerval)
+                      this.changetype(markerval);
+                      this.markerlocation = markerval;
+                    })
+                  }
+                }else{
+                  if(!this.alreadysubed){
+                    this.alreadysubed = true;
+                    this.network.onConnect().subscribe(()=>{
+                      console.log("got connection "+this.network.type);
+                      if(this.mapInitialized == false){
+                        this.storage.provide().then(settings => {
+                          this.settings = settings;
+                          this.initializeMap(settings,this.mailsplit);
+                        })
+                      }
+                    });
+                  }
+                }
               })
             },
             (async (error) => { await this.delay(5000); this.initializeMap(settings,mailsplit)})
