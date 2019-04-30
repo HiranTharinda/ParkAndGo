@@ -65,6 +65,38 @@ export class AuthServiceService {
     return this.user;
   }
 
+  async googleConnect(){
+    /*try {
+      console.log('this shit runs');
+      const gplusUser = await this.gplus.login({
+        'webClientId': '320215829065-p31tecv30i8ttac4u65uhn7um9qgl2vn.apps.googleusercontent.com',
+        'offline': true,
+        'scopes': 'profile email'
+      })
+
+      const googletoken = firebase.auth.GoogleAuthProvider.credential(gplusUser.idToken);
+      this.afAuth.auth.currentUser.linkAndRetrieveDataWithCredential(googletoken).then(res => {
+        this.showToast('Linked accounts sucessfully');
+      });
+
+    } catch(err) {
+      this.showToast('An error occured Please try Again');
+    }*/
+  }
+
+  facebookConnect(){/*
+    this.facebook.login(['public_profile', 'user_friends', 'email'])
+        .then( response => {
+          const facebookCredential = firebase.auth.FacebookAuthProvider
+            .credential(response.authResponse.accessToken);
+
+            this.afAuth.auth.currentUser.linkAndRetrieveDataWithCredential(facebookCredential).then(res => {
+              this.showToast('Linked accounts sucessfully');
+            });
+
+        }).catch((error) => { this.showToast('An Error occured Please try Again'); });*/
+  }
+
   async loggoo(){
     try {
       console.log('this shit runs');
@@ -76,10 +108,12 @@ export class AuthServiceService {
 
       this.afAuth.auth.signInWithCredential(firebase.auth.GoogleAuthProvider.credential(gplusUser.idToken)).then( token => {
         this.router.navigate(['/home']);
+      }).catch(error => {
+        this.showToast('You have already made an account with this email Please Verify it or Try another account');
       })
 
     } catch(err) {
-      console.log(err)
+      this.showToast('You have already made an account with this email Please Verify it or Try another account');
     }
   }
 
@@ -102,9 +136,11 @@ export class AuthServiceService {
           this.afAuth.auth.signInWithCredential(facebookCredential)
             .then( success => {
               this.router.navigate(['/home']);
+            }).catch(error => {
+              this.showToast('You have already made an account with this email Please Verify it or Try another account');
             });
 
-        }).catch((error) => { console.log(error) });
+        }).catch((error) => { this.showToast('You have already made an account with this email Please Verify it or Try another account'); });
   }
 
   emailLogin(email, password){
@@ -121,6 +157,7 @@ export class AuthServiceService {
       this.sendVerifciation();
       this.router.navigate(['/home']);
     }).catch(error => {
+      this.showToast('You have already made an account with this email Please  Verify it or Try another account');
       this.signOut();
     });
   }
