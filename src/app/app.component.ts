@@ -103,14 +103,16 @@ export class AppComponent {
               if (distance < this.settings.currrad){
                 this.localNotifications.schedule({
                   id: 1,
-                  text: 'New Public Location Updated'
+                  text: 'New Public Location Updated',
+                  foreground:false
                 });
               }
             }else if (msg.type == 'private'){
               if (distance < this.settings.favrad){
                 this.localNotifications.schedule({
                   id: 1,
-                  text: 'New Private Location Updated'
+                  text: 'New Private Location Updated',
+                  foreground:false
                 });
               }
             }
