@@ -327,10 +327,16 @@ export class HomePage implements OnInit {
   }
 
   // Send Notification to Confirm Reporting of a location
-  async sendnotification(id, collection, description,reportno) {
+  async sendnotification(id, collection, description,reportno,flagged) {
+    let d = ""
+    if(flagged){
+      d = '<p>'+description+' </p> <br /><ion-icon color="gp" md="md-flag"></ion-icon><p>This location has been Flagged</p><br /><p> Reports on this location : '+reportno+'</p>'
+    } else {
+      d = '<p>'+description+' </p> <br /><p> Reports on this location : '+reportno+'</p>'
+    }
     const alert = await this.alertCtrl.create({
       header: 'Info',
-      message: '<p>'+description+' </p> <br /><p> Reports on this location : '+reportno+'</p>',
+      message: d,
       buttons: [
                 {
                   text: 'OK',
@@ -420,7 +426,12 @@ export class HomePage implements OnInit {
           var description = e.features[0].properties.id;
           var info = e.features[0].properties.description;
           var rn = e.features[0].properties.rb;
-          this.sendnotification(description,'private',info,rn)
+          if(e.features[0].properties.flagged){
+            var flagged = true;
+          }else{
+            var flagged = false;
+          }
+          this.sendnotification(description,'private',info,rn,flagged)
         });
         // Add a click event to the private layer of the map
         this.map.on('click', 'firebase2', (e) => {
@@ -428,7 +439,12 @@ export class HomePage implements OnInit {
             var description = e.features[0].properties.id;
             var info = e.features[0].properties.description;
             var rn = e.features[0].properties.rb;
-            this.sendnotification(description,'public',info,rn)
+            if(e.features[0].properties.flagged){
+              var flagged = true;
+            }else{
+              var flagged = false;
+            }
+            this.sendnotification(description,'public',info,rn,flagged)
         });
 
     /// Add map controls
