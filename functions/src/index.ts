@@ -98,20 +98,38 @@ export const callme = functions.pubsub
       let count = 0;
       admin.firestore().collection("public").stream().on('data', (documentSnapshot) => {
         let domainnames = documentSnapshot.get('url');
+        //let id = documentSnapshot.id;
         console.log(domainnames)
         /*const d = (JSON.stringify(domainnames))
         request.post(
-            'http://35.222.248.23:80/?url='+d,
+            'http://35.194.195.18:80/?url='+d,
             { json: { urls: 'value' } },
             function (error, response, body) {
                 console.log(response);
                 if (!error && response.statusCode == 200) {
-                    console.log(body);
+                    if(body.free == 0 ){
+                      console.log(id);
+                      console.log(body);
+                      admin.firestore().collection("public").doc(id).update({
+                        ps: 0,
+                        flagged : true
+                      }).then( resp => { console.log("done")}).catch(err => {console.log("err")})
+                    }else{
+                      admin.firestore().collection("public").doc(id).update({
+                        ps: body.free
+                      }).then( resp => { console.log("done")}).catch(err => {console.log("err")})
+                    }
+
                 }
                 else if(error){
-                  console.log(error)
-                }else if(response.statusCode != 200){
-                  console.log(response.statusCode)
+                  admin.firestore().collection("public").doc(id).update({
+                    flagged : true
+                  }).then( resp => { console.log("done")}).catch(err => {console.log("err")})
+                }else if(response.statusCode == 500 ){
+                  admin.firestore().collection("public").doc(id).update({
+                    ps: 0,
+                    flagged : true
+                  }).then( resp => { console.log("done")}).catch(err => {console.log("err")})
                 }
             }
         );*/
