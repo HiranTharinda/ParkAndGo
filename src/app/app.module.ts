@@ -20,7 +20,7 @@ import { AuthGuard } from './auth.guard';
 import { VerificationGuard } from './verification.guard';
 import { Facebook } from '@ionic-native/facebook/ngx'
 import { IonicStorageModule } from '@ionic/storage';
-
+import { BackgroundMode } from '@ionic-native/background-mode/ngx';
 import { environment } from '../environments/environment';
 
 import { LocalstorageService } from './localstorage.service';
@@ -57,6 +57,7 @@ import { MockComponent } from './mock/mock.component';
     Geolocation,
     Network,
     LocationAccuracy,
+     BackgroundMode,
     LocalstorageService,
     LoggedInGuard,
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy }

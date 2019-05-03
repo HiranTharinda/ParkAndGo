@@ -39,10 +39,12 @@ export const privreportdelete = functions.firestore.document('privreports/{locat
 export const publicupdate = functions.firestore.document('public/{locationID}').onUpdate((event,context) => {
 // Grab the current value of what was written to the Realtime Database.
   const originals = event.after;
-
-  if(originals){
+  const befores = event.before;
+  const locid = context.params.locationID;
+  if(originals && befores){
     const original = originals.data();
-    if(original){
+    const before = befores.data();
+    if(original && before){
       console.log(original);
       const topic = 'public';
 
@@ -52,12 +54,19 @@ export const publicupdate = functions.firestore.document('public/{locationID}').
           hash : original.position.geohash,
           lat : original.position.geopoint._latitude.toString(),
           lng : original.position.geopoint._longitude.toString(),
-          parkingspots : original.ps.toString()
+          parkingspots : original.ps.toString(),
+          des : original.description
         },
         topic: topic
       };
-      admin.messaging().send(message)
-      .then(() => console.log('this will succeed')).catch(err => console.log(err))
+      if(original.ps != before.ps){
+        admin.messaging().send(message)
+        .then(() => console.log('this will succeed')).catch(err => console.log(err))
+      }
+      if(original.rb >= 20 &&(original.flagged ==false || original.flagged == undefined)){
+        admin.firestore().collection('public').doc(locid).update({flagged:true}).then(()=> {console.log('done')}).catch(error => console.log(error))
+      }
+
     }
 
   }
@@ -67,10 +76,12 @@ export const publicupdate = functions.firestore.document('public/{locationID}').
 export const privateupdate = functions.firestore.document('private/{locationID}').onUpdate((event,context) => {
 // Grab the current value of what was written to the Realtime Database.
 const originals = event.after;
-
-if(originals){
+const befores = event.before;
+const locid = context.params.locationID;
+if(originals && befores){
   const original = originals.data();
-    if(original){
+  const before = befores.data();
+    if(original && before){
       console.log(original);
       for(const i of original.dmn ){
         const message = {
@@ -79,12 +90,18 @@ if(originals){
             hash : original.position.geohash,
             lat : original.position.geopoint._latitude.toString(),
             lng : original.position.geopoint._longitude.toString(),
-            parkingspots : original.ps.toString()
+            parkingspots : original.ps.toString(),
+            des : original.description
           },
           topic: i
         };
-        admin.messaging().send(message)
-      .then(() => console.log('this will succeed')).catch(err => console.log(err))
+        if(original.ps != before.ps){
+          admin.messaging().send(message)
+          .then(() => console.log('this will succeed')).catch(err => console.log(err))
+        }
+        if(original.rb >= 20 && (original.flagged ==false || original.flagged == undefined) ){
+          admin.firestore().collection('private').doc(locid).update({flagged:true}).then(()=> {console.log('done')}).catch(error => console.log(error))
+        }
       }
     }
   }

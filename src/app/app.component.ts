@@ -5,7 +5,7 @@ import { SplashScreen } from '@ionic-native/splash-screen/ngx';
 import { StatusBar } from '@ionic-native/status-bar/ngx';
 import { AuthServiceService } from './auth-service.service';
 import { LocalstorageService } from './localstorage.service';
-
+import { BackgroundMode } from '@ionic-native/background-mode/ngx'
 import { FcmService } from './fcm.service';
 import { LocalNotifications } from '@ionic-native/local-notifications/ngx';
 import { Geolocation } from '@ionic-native/geolocation/ngx';
@@ -49,6 +49,7 @@ export class AppComponent {
     private platform: Platform,
     private splashScreen: SplashScreen,
     private statusBar: StatusBar,
+    private bg :BackgroundMode,
     private fcm: FcmService,
     private auth: AuthServiceService,
     private storage: LocalstorageService,
@@ -99,11 +100,17 @@ export class AppComponent {
           this.geolocation.getCurrentPosition().then((resp) => {
             var distance = this.caldistance(resp.coords.latitude, resp.coords.longitude, msg.lat, msg.lng)
             console.log(distance)
+            var textshown = ''
+            if(msg.des == 'No description Available'){
+                textshown =msg.lat+" "+msg.lng+" with "+msg.parkingspots+" locations available"
+            }else{
+                textshown = msg.des+" with "+msg.parkingspots+" locations available"
+            }
             if(msg.type == 'public'){
               if (distance < this.settings.currrad){
                 this.localNotifications.schedule({
                   id: 1,
-                  text: 'New Public Location Updated',
+                  text: 'New Public Location Updated at '+textshown,
                   foreground:false
                 });
               }
@@ -111,7 +118,7 @@ export class AppComponent {
               if (distance < this.settings.favrad){
                 this.localNotifications.schedule({
                   id: 1,
-                  text: 'New Private Location Updated',
+                  text: 'New Private Location Updated '+textshown,
                   foreground:false
                 });
               }
@@ -149,6 +156,19 @@ export class AppComponent {
       this.splashScreen.hide();
       // Ensure network connection is available
       console.log(this.network.type)
+      this.bg.enable();
+      this.bg.on('activate').subscribe( () => {
+        this.bg.disableWebViewOptimizations();
+        console.log("backgroundMode is Active");
+      });
+      this.bg.setDefaults({
+        title: "Running in background",
+        text: "On the look out for new Parking spaces",
+        icon: 'icon',
+        resume: true,
+        hidden: false,
+        bigText: false
+      })
       if(this.network.type == 'none' || this.network.type == undefined ){
         this.auth.nonetwork();
       }else{
