@@ -58,4 +58,16 @@ describe('DbService', () => {
     flushMicrotasks();
     expect(spy).toHaveBeenCalled();
   }));
+
+  it('should report correctly ', fakeAsync(() => {
+
+  }));
+
+  it('should display error if already reported ', fakeAsync(() => {
+
+  }));
+
+  it('should format locations in correct format ', fakeAsync(() => {
+
+  }));
 });

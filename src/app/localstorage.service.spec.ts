@@ -63,4 +63,8 @@ describe('LocalstorageService', () => {
       expect(spy1).not.toHaveBeenCalled();
       expect(spy2.calls.all().length).toBe(6);
   }));
+
+  it('should clear settings and call save to db in Db service', fakeAsync(()=> {
+    
+  }));
 });
