@@ -115,9 +115,9 @@ export const callme = functions.pubsub
       let count = 0;
       admin.firestore().collection("public").stream().on('data', (documentSnapshot) => {
         let domainnames = documentSnapshot.get('url');
-        //let id = documentSnapshot.id;
+        let id = documentSnapshot.id;
         console.log(domainnames)
-        /*const d = (JSON.stringify(domainnames))
+        const d = (JSON.stringify(domainnames))
         request.post(
             'http://35.194.195.18:80/?url='+d,
             { json: { urls: 'value' } },
@@ -149,7 +149,7 @@ export const callme = functions.pubsub
                   }).then( resp => { console.log("done")}).catch(err => {console.log("err")})
                 }
             }
-        );*/
+        );
       }).on('end', () => {
         console.log(count);
       });
