@@ -9,13 +9,42 @@ import { AngularFireModule } from '@angular/fire';
 import { AngularFireAuthModule } from '@angular/fire/auth';
 import { environment } from '../environments/environment';
 
+
+class GeoPoint{
+  constructor(coordinates){
+    return "something"
+  }
+}
+const doc = {
+  set:  jasmine.createSpy('set').and.returnValue(new Promise((resolve,reject)=> resolve()))
+}
+
+const nextlevelcol = {
+    doc: jasmine.createSpy('doc').and.returnValue(doc)
+  };
+
+const nextlevelcollection = {
+    collection:  jasmine.createSpy('collection').and.returnValue(nextlevelcol),
+    delete : jasmine.createSpy('delete').and.returnValue(new Promise((resolve,reject)=> resolve())),
+    update : jasmine.createSpy('update').and.returnValue(new Promise((resolve,reject)=> resolve())),
+    set : jasmine.createSpy('set').and.returnValue(new Promise((resolve,reject)=> resolve())),
+  };
+
+const collectionStub = {
+  doc:  jasmine.createSpy('doc').and.returnValue(nextlevelcollection)
+}
+
+const batchStub = {
+  set:  jasmine.createSpy('set').and.returnValue('set'),
+  commit : jasmine.createSpy('commit').and.returnValue(new Promise((resolve,reject)=> resolve()))
+}
+
 const FirestoreStub = {
-    collection: (name: string) => ({
-      doc: (_id: string) => ({
-        valueChanges: () => new BehaviorSubject({ foo: 'bar' }),
-        set: (_d: any) => new Promise((resolve, _reject) => resolve({foo:'bar'})),
-      }),
-    }),
+    collection:  jasmine.createSpy('collection').and.returnValue(collectionStub),
+    firestore : {
+      collection : jasmine.createSpy('collection').and.returnValue(collectionStub),
+      batch : jasmine.createSpy('batch').and.returnValue(batchStub)
+    }
   };
   const AuthserviceMock = {
       user: of({ uid: 'ABC123' , email:'ranika@gmail.com' , displayName:'okay', photoURL:'/img.jpg', emailVerified:true}),
@@ -40,12 +69,7 @@ describe('DbService', () => {
     auth = TestBed.get(AuthServiceService);
     db = TestBed.get(AngularFirestore);
     spy = spyOn(auth,'signOut').and.returnValue(new Promise((resolve,reject)=> resolve()));
-    spy2 = spyOn(db,'collection').and.returnValue({
-      doc: (_id: string) => ({
-        valueChanges: () => new BehaviorSubject({ foo: 'bar' }),
-        set: (_d: any) => new Promise((resolve, _reject) => resolve({foo:'bar'})),
-      }),
-    });
+    spy2 = spyOn(service,'showToast').and.returnValue('Made notification');
   });
 
   it('should be created', () => {
@@ -60,14 +84,16 @@ describe('DbService', () => {
   }));
 
   it('should report correctly ', fakeAsync(() => {
-
+    service.user = { uid: 'ABC123' , email:'ranika@gmail.com' , displayName:'okay', photoURL:'/img.jpg', emailVerified:true}
+    service.reportlocation('loc123','private',{issue:"Something Bad happened"});
+    flushMicrotasks();
+    expect(db.collection).toHaveBeenCalledWith('privreports');
+    expect(db.collection('privreports').doc).toHaveBeenCalledWith('loc123');
+    expect(db.collection('privreports').doc('loc123').collection).toHaveBeenCalledWith('reportlist');
+    expect(db.collection('privreports').doc('loc123').collection('reportlist').doc).toHaveBeenCalledWith('ABC123');
   }));
 
   it('should display error if already reported ', fakeAsync(() => {
-
-  }));
-
-  it('should format locations in correct format ', fakeAsync(() => {
 
   }));
 });

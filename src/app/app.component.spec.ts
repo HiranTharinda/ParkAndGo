@@ -1,6 +1,6 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { TestBed, async, fakeAsync, tick, flushMicrotasks } from '@angular/core/testing';
-
+import { BackgroundMode } from '@ionic-native/background-mode/ngx'
 import { Platform } from '@ionic/angular';
 import { SplashScreen } from '@ionic-native/splash-screen/ngx';
 import { StatusBar } from '@ionic-native/status-bar/ngx';
@@ -37,6 +37,13 @@ const geolocationmock = {
   getCurrentPosition:()=> new Promise((resolve,reject) => {resolve()}) ,
   valueChanges:() => new BehaviorSubject({ foo: 'bar' })
 }
+
+const backgroundmock = {
+  enable: () => {console.log('enabled')},
+  on:() => new BehaviorSubject({foo:'bar'}),
+  setDefaults:() => { console.log('Options set')},
+}
+
 const AuthserviceMock = {
     user: of({ uid: 'ABC123' , email:'ranika@gmail.com' , displayName:'okay', photoURL:'/img.jpg', emailVerified:true}),
     signOut:()=>{this.user = null},
@@ -87,6 +94,7 @@ describe('AppComponent', () => {
         { provide: Platform, useValue: platformSpy },
         {provide:AuthServiceService, useValue:AuthserviceMock},
         {provide:LocalstorageService, useValue:localstorageMock},
+        {provide: BackgroundMode, useValue:backgroundmock},
         {provide :FcmService,useValue:fcmmock},
         {provide:Geolocation, useValue:geolocationmock},
         { provide:Network , useValue:NetworkStub}
