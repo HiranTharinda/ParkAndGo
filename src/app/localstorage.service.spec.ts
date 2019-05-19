@@ -7,6 +7,7 @@ import { Storage } from '@ionic/storage';
 const storageMock = {
   set:(id: string , value:string) => new Promise((resolve,reject) => {resolve()}) ,
   get:(id: string ) => new Promise((resolve,reject) => {resolve('defaultvalue')}) ,
+  clear:() => {console.log('Cleared')}
 }
 
 const storageMock2 = {
@@ -27,6 +28,7 @@ describe('LocalstorageService', () => {
   let db : DbService;
   let spy1 : jasmine.Spy;
   let spy2 : jasmine.Spy;
+  let spydbsave : jasmine.Spy;
 
   beforeEach(() => TestBed.configureTestingModule({
     providers :[{provide:DbService, useValue : dbservicemock},
@@ -41,6 +43,7 @@ describe('LocalstorageService', () => {
     spy1 = spyOn(db, 'providesetttings').and.returnValue({
       valueChanges:() => new BehaviorSubject({ foo: 'bar' })
     });
+    spydbsave = spyOn(db, 'savesettings').and.returnValue('saved');
     spy2 = spyOn(storage,'get')
   });
 
@@ -65,6 +68,10 @@ describe('LocalstorageService', () => {
   }));
 
   it('should clear settings and call save to db in Db service', fakeAsync(()=> {
-    
+    spy2.and.returnValue(new Promise((resolve,reject) => {resolve('defaultvalue')}))
+    service.savetodb();
+    flushMicrotasks();
+    expect(spy2.calls.all().length).toBe(6);
+    expect(spydbsave).toHaveBeenCalled();
   }));
 });
