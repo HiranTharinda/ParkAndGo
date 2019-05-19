@@ -124,6 +124,7 @@ export class HomePage implements OnInit {
     if (this.timesentered == 0) {
         this.timesentered = 1
     } else {
+      this.map.resize();
       this.storage.provide().then(settings => {
         this.settings = settings;
         this.changetype(this.markerlocation);
