@@ -93,7 +93,4 @@ describe('DbService', () => {
     expect(db.collection('privreports').doc('loc123').collection('reportlist').doc).toHaveBeenCalledWith('ABC123');
   }));
 
-  it('should display error if already reported ', fakeAsync(() => {
-
-  }));
 });
