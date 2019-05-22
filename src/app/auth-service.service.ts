@@ -65,41 +65,8 @@ export class AuthServiceService {
     return this.user;
   }
 
-  async googleConnect(){
-    /*try {
-      console.log('this shit runs');
-      const gplusUser = await this.gplus.login({
-        'webClientId': '320215829065-p31tecv30i8ttac4u65uhn7um9qgl2vn.apps.googleusercontent.com',
-        'offline': true,
-        'scopes': 'profile email'
-      })
-
-      const googletoken = firebase.auth.GoogleAuthProvider.credential(gplusUser.idToken);
-      this.afAuth.auth.currentUser.linkAndRetrieveDataWithCredential(googletoken).then(res => {
-        this.showToast('Linked accounts sucessfully');
-      });
-
-    } catch(err) {
-      this.showToast('An error occured Please try Again');
-    }*/
-  }
-
-  facebookConnect(){/*
-    this.facebook.login(['public_profile', 'user_friends', 'email'])
-        .then( response => {
-          const facebookCredential = firebase.auth.FacebookAuthProvider
-            .credential(response.authResponse.accessToken);
-
-            this.afAuth.auth.currentUser.linkAndRetrieveDataWithCredential(facebookCredential).then(res => {
-              this.showToast('Linked accounts sucessfully');
-            });
-
-        }).catch((error) => { this.showToast('An Error occured Please try Again'); });*/
-  }
-
   async loggoo(){
     try {
-      console.log('this shit runs');
       const gplusUser = await this.gplus.login({
         'webClientId': '320215829065-p31tecv30i8ttac4u65uhn7um9qgl2vn.apps.googleusercontent.com',
         'offline': true,
@@ -162,6 +129,7 @@ export class AuthServiceService {
     });
   }
 
+  // Helper function to show Toast Message
   async showToast(error){
     let toast = await this.toastCtrl.create({
       message: error,
@@ -172,6 +140,7 @@ export class AuthServiceService {
     toast.present();
   }
 
+  //Take credential provided by the Login Method and store user and Navigate
   private oAuthLogin(provider) {
     return this.afAuth.auth.signInWithPopup(provider)
       .then((credential) => {
@@ -180,6 +149,7 @@ export class AuthServiceService {
       })
   }
 
+  //signout
   signOut() {
     this.afAuth.auth.signOut().then(() => {
         this.router.navigate(['/']);

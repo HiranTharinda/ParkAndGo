@@ -20,7 +20,7 @@ import { trigger, style, animate, transition } from '@angular/animations';
   styleUrls: ['./editprofile.page.scss'],
 })
 export class EditprofilePage implements OnInit {
-
+  // list of all questions
   questions = [{ q : 'What it this App About ?' , a: 'Park&Go provides users a user friendly way to locate nearby parkings lots in the area visualized through our user friendly map' , o:false}
   ,{ q : 'What does everything mean?' , a: 'The car symbols on the area represent parking lots the number below represent the number of parking spots in the area', o:false}
   ,{ q : 'Why are there parking spaces with no numbers ?' , a: 'This is to preserve a unclustered view of the map. Simply zoom in to see a more detailed view', o:false},

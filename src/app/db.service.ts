@@ -84,6 +84,8 @@ export class DbService {
     }
   }
 
+
+  //Helper function to show toast Message
   async showToast(error){
     let toast = await this.toastCtrl.create({
       message: error,
@@ -94,10 +96,12 @@ export class DbService {
     toast.present();
   }
 
+  // Get settings from Database for relevant user
   providesetttings() {
     return this.afs.collection('settings').doc<Settings>(this.user.uid);
   }
 
+  //Save Settings in Database when user Logs Out after wards logout
   savesettings(settings) {
     this.afs.collection('settings').doc(this.user.uid).set(settings).then(res => {
       this.auth.signOut();
