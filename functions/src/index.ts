@@ -1,7 +1,7 @@
 import * as functions from 'firebase-functions';
 import * as admin from 'firebase-admin';
 admin.initializeApp();
-//import * as request from 'request';
+import * as request from 'request';
 
 export const pubreport = functions.firestore.document('pubreports/{locationID}/reportlist/{reportid}').onCreate((snapshot,context) => {
 // Grab the current value of what was written to the Realtime Database.
@@ -119,7 +119,7 @@ export const callme = functions.pubsub
         console.log(domainnames)
         const d = (JSON.stringify(domainnames))
         request.post(
-            'http://35.194.195.18:80/?url='+d,
+            'http://34.73.71.55:80/?url='+d,
             { json: { urls: 'value' } },
             function (error, response, body) {
                 console.log(response);
@@ -144,6 +144,46 @@ export const callme = functions.pubsub
                   }).then( resp => { console.log("done")}).catch(err => {console.log("err")})
                 }else if(response.statusCode == 500 ){
                   admin.firestore().collection("public").doc(id).update({
+                    ps: 0,
+                    flagged : true
+                  }).then( resp => { console.log("done")}).catch(err => {console.log("err")})
+                }
+            }
+        );
+      }).on('end', () => {
+        console.log(count);
+      });
+      admin.firestore().collection("private").stream().on('data', (documentSnapshot) => {
+        let domainnames = documentSnapshot.get('url');
+        let id = documentSnapshot.id;
+        console.log(domainnames)
+        const d = (JSON.stringify(domainnames))
+        request.post(
+            'http://34.73.71.55:80/?url='+d,
+            { json: { urls: 'value' } },
+            function (error, response, body) {
+                console.log(response);
+                if (!error && response.statusCode == 200) {
+                    if(body.free == 0 ){
+                      console.log(id);
+                      console.log(body);
+                      admin.firestore().collection("private").doc(id).update({
+                        ps: 0,
+                        flagged : true
+                      }).then( resp => { console.log("done")}).catch(err => {console.log("err")})
+                    }else{
+                      admin.firestore().collection("private").doc(id).update({
+                        ps: body.free
+                      }).then( resp => { console.log("done")}).catch(err => {console.log("err")})
+                    }
+
+                }
+                else if(error){
+                  admin.firestore().collection("private").doc(id).update({
+                    flagged : true
+                  }).then( resp => { console.log("done")}).catch(err => {console.log("err")})
+                }else if(response.statusCode == 500 ){
+                  admin.firestore().collection("private").doc(id).update({
                     ps: 0,
                     flagged : true
                   }).then( resp => { console.log("done")}).catch(err => {console.log("err")})
