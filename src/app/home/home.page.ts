@@ -293,16 +293,14 @@ export class HomePage implements OnInit {
         source: 'firebase',
         type: 'symbol',
         layout: {
-          'text-field': '{ps}',
+          'text-field': '',
           'text-size': 24,
           'text-transform': 'uppercase',
           'icon-image': 'car-15',
           'text-offset': [0, 1.5]
         },
         paint: {
-          'text-color': '#f16624',
-          'text-halo-color': '#fff',
-          'text-halo-width': 2
+          'icon-color': '#f16624'
         }
       })
     }
@@ -312,28 +310,26 @@ export class HomePage implements OnInit {
         source: 'firebase2',
         type: 'symbol',
         layout: {
-          'text-field': '{ps}',
+          'text-field': '',
           'text-size': 24,
           'text-transform': 'uppercase',
           'icon-image': 'car-15',
           'text-offset': [0, 1.5]
         },
         paint: {
-          'text-color': '#fd323f',
-          'text-halo-color': '#fff',
-          'text-halo-width': 2
+          'icon-color': '#fd323f'
         }
       })
     }
   }
 
   // Send Notification to Confirm Reporting of a location
-  async sendnotification(id, collection, description,reportno,flagged) {
+  async sendnotification(id, collection, description,reportno,flagged,ps) {
     let d = ""
     if(flagged){
-      d = '<p>'+description+' </p> <br /><ion-icon color="gp" md="md-flag"></ion-icon><p>This location has been Flagged</p><br /><p> Reports on this location : '+reportno+'</p>'
+      d = '<p>'+description+' </p><br /><p>No of Parking Spaces : '+ps+'</p> <br /><ion-icon color="gp" md="md-flag"></ion-icon><p>This location has been Flagged</p><br /><p> Reports on this location : '+reportno+'</p>'
     } else {
-      d = '<p>'+description+' </p> <br /><p> Reports on this location : '+reportno+'</p>'
+      d = '<p>'+description+' </p> <br /><p>No of Parking Spaces : '+ps+'</p> <br /><p> Reports on this location : '+reportno+'</p>'
     }
     const alert = await this.alertCtrl.create({
       header: 'Info',
@@ -427,12 +423,13 @@ export class HomePage implements OnInit {
           var description = e.features[0].properties.id;
           var info = e.features[0].properties.description;
           var rn = e.features[0].properties.rb;
+          var ps = e.features[0].properties.ps;
           if(e.features[0].properties.flagged){
             var flagged = true;
           }else{
             var flagged = false;
           }
-          this.sendnotification(description,'private',info,rn,flagged)
+          this.sendnotification(description,'private',info,rn,flagged,ps)
         });
         // Add a click event to the private layer of the map
         this.map.on('click', 'firebase2', (e) => {
@@ -440,12 +437,13 @@ export class HomePage implements OnInit {
             var description = e.features[0].properties.id;
             var info = e.features[0].properties.description;
             var rn = e.features[0].properties.rb;
+            var ps = e.features[0].properties.ps;
             if(e.features[0].properties.flagged){
               var flagged = true;
             }else{
               var flagged = false;
             }
-            this.sendnotification(description,'public',info,rn,flagged)
+            this.sendnotification(description,'public',info,rn,flagged,ps)
         });
 
     /// Add map controls
@@ -516,16 +514,14 @@ export class HomePage implements OnInit {
               source: 'firebase',
               type: 'symbol',
               layout: {
-                'text-field': '{ps}',
+                'text-field': '',
                 'text-size': 24,
                 'text-transform': 'uppercase',
                 'icon-image': 'car-15',
                 'text-offset': [0, 1.5]
               },
               paint: {
-                'text-color': '#f16624',
-                'text-halo-color': '#fff',
-                'text-halo-width': 2
+                'icon-color': '#f16624'
               }
             })
           }
@@ -537,16 +533,14 @@ export class HomePage implements OnInit {
               source: 'firebase2',
               type: 'symbol',
               layout: {
-                'text-field': '{ps}',
+                'text-field': '',
                 'text-size': 24,
                 'text-transform': 'uppercase',
                 'icon-image': 'car-15',
                 'text-offset': [0, 1.5]
               },
               paint: {
-                'text-color': '#fd323f',
-                'text-halo-color': '#fff',
-                'text-halo-width': 2
+                'icon-color': '#fd323f'
               }
             })
           }

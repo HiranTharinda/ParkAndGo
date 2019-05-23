@@ -1,7 +1,7 @@
 import * as functions from 'firebase-functions';
 import * as admin from 'firebase-admin';
 admin.initializeApp();
-import * as request from 'request';
+//import * as request from 'request';
 
 export const pubreport = functions.firestore.document('pubreports/{locationID}/reportlist/{reportid}').onCreate((snapshot,context) => {
 // Grab the current value of what was written to the Realtime Database.
@@ -112,14 +112,14 @@ if(originals && befores){
 export const callme = functions.pubsub
   .topic('getalldata')
   .onPublish(async message => {
-      let count = 0;
+      /*let count = 0;
       admin.firestore().collection("public").stream().on('data', (documentSnapshot) => {
         let domainnames = documentSnapshot.get('url');
         let id = documentSnapshot.id;
         console.log(domainnames)
         const d = (JSON.stringify(domainnames))
         request.post(
-            'http://34.73.71.55:80/?url='+d,
+            'http://35.229.99.31:80/?url='+d,
             { json: { urls: 'value' } },
             function (error, response, body) {
                 console.log(response);
@@ -159,7 +159,7 @@ export const callme = functions.pubsub
         console.log(domainnames)
         const d = (JSON.stringify(domainnames))
         request.post(
-            'http://34.73.71.55:80/?url='+d,
+            'http://35.229.99.31:80/?url='+d,
             { json: { urls: 'value' } },
             function (error, response, body) {
                 console.log(response);
@@ -192,5 +192,5 @@ export const callme = functions.pubsub
         );
       }).on('end', () => {
         console.log(count);
-      });
+      });*/
   });
