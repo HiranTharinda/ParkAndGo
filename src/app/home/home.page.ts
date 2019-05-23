@@ -291,10 +291,13 @@ export class HomePage implements OnInit {
       this.map.addLayer({
         id: 'firebase',
         source: 'firebase',
-        type: 'circle',
+        type: 'symbol',
+        layout : {
+          'icon-image':'cat',
+          "icon-size": 0.05
+        },
         paint: {
-          "circle-radius":7,
-          "circle-color": {
+          "icon-color": {
             "property": "ps",
             "stops": [
               [0, "#ef3b2c"],
@@ -308,14 +311,17 @@ export class HomePage implements OnInit {
       this.map.addLayer({
         id: 'firebase2',
         source: 'firebase2',
-        type: 'circle',
+        type: 'symbol',
+        layout : {
+          'icon-image':'cat',
+          "icon-size": 0.05
+        },
         paint: {
-          "circle-radius":7,
-          "circle-color": {
+          "icon-color": {
             "property": "ps",
             "stops": [
               [0, "#ef3b2c"],
-              [1, "#228B22"]
+              [1, "#0080ff"]
             ]
           }
         }
@@ -448,123 +454,128 @@ export class HomePage implements OnInit {
 
     /// Add map controls
     this.map.addControl(new mapboxgl.NavigationControl());
-
+    var that = this
     this.map.on('load', (event) => {
-          this.mapInitialized = true;
-          /// register the 3 sources public,private and gps to the map
-          this.map.addSource('firebase', {
-             type: 'geojson',
-             data: {
-               type: 'FeatureCollection',
-               features: []
-             },
-             cluster: true,
-             clusterMaxZoom: 14,
-             clusterRadius: 50
-          });
+          this.map.loadImage('https://upload.wikimedia.org/wikipedia/commons/thumb/6/60/Cat_silhouette.svg/400px-Cat_silhouette.svg.png', function(error, image) {
+            that.mapInitialized = true;
+            that.map.addImage('cat', image , {sdf:true});
+            /// register the 3 sources public,private and gps to the map
+            that.map.addSource('firebase', {
+               type: 'geojson',
+               data: {
+                 type: 'FeatureCollection',
+                 features: []
+               },
+               cluster: true,
+               clusterMaxZoom: 14,
+               clusterRadius: 50
+            });
 
-          this.map.addSource('firebase2', {
-             type: 'geojson',
-             data: {
-               type: 'FeatureCollection',
-               features: []
-             },
-             cluster: true,
-             clusterMaxZoom: 14,
-             clusterRadius: 50
-          });
+            that.map.addSource('firebase2', {
+               type: 'geojson',
+               data: {
+                 type: 'FeatureCollection',
+                 features: []
+               },
+               cluster: true,
+               clusterMaxZoom: 14,
+               clusterRadius: 50
+            });
 
-          this.map.addSource('gps', {
-             type: 'geojson',
-             data: {
-               type: 'FeatureCollection',
-               features: []
-             }
-          });
-          /// get source
-          this.source1 = this.map.getSource('firebase');
-          this.source2 = this.map.getSource('firebase2');
-          this.gps = this.map.getSource('gps');
-          // assign private source
-          this.privmarkers.subscribe(markers => {
-              console.log(markers);
-              let data = markers
-              this.source1.setData(data)
-          })
-          // assign the public source
-          this.pubmarkers.subscribe(markers => {
-              console.log(markers);
-              let data = markers
-              this.source2.setData(data)
-          })
-          // assign the gps source
-          this.geolocation.watchPosition().subscribe(data => {
-              let pos = [data.coords.longitude,data.coords.latitude]
-              let x = new GeoJson(pos);
-              let arr = [x];
-              const fc = new FeatureCollection(arr);
-              console.log(fc);
-              this.gps.setData(fc);
-          });
-
-          // Add private source to the map
-          if(this.settings.favshow){
-            this.map.addLayer({
-              id: 'firebase',
-              source: 'firebase',
-              type: 'circle',
-              paint: {
-                "circle-radius":7,
-                "circle-color": {
-                  "property": "ps",
-                  "stops": [
-                    [0, "#ef3b2c"],
-                    [1, "#0080ff"]
-                  ]
-                }
-              }
+            that.map.addSource('gps', {
+               type: 'geojson',
+               data: {
+                 type: 'FeatureCollection',
+                 features: []
+               }
+            });
+            /// get source
+            that.source1 = that.map.getSource('firebase');
+            that.source2 = that.map.getSource('firebase2');
+            that.gps = that.map.getSource('gps');
+            // assign private source
+            that.privmarkers.subscribe(markers => {
+                console.log(markers);
+                let data = markers
+                that.source1.setData(data)
             })
-          }
-
-          // Add public source to the map
-          if(this.settings.currshow){
-            this.map.addLayer({
-              id: 'firebase2',
-              source: 'firebase2',
-              type: 'circle',
-              paint: {
-                "circle-radius":7,
-                "circle-color": {
-                  "property": "ps",
-                  "stops": [
-                    [0, "#ef3b2c"],
-                    [1, "#228B22"]
-                  ]
-                }
-              }
+            // assign the public source
+            that.pubmarkers.subscribe(markers => {
+                console.log(markers);
+                let data = markers
+                that.source2.setData(data)
             })
-          }
+            // assign the gps source
+            that.geolocation.watchPosition().subscribe(data => {
+                let pos = [data.coords.longitude,data.coords.latitude]
+                let x = new GeoJson(pos);
+                let arr = [x];
+                const fc = new FeatureCollection(arr);
+                console.log(fc);
+                that.gps.setData(fc);
+            });
 
-          // Add gps source to the map
-          this.map.addLayer({
-            id: 'gps',
-            source: 'gps',
-            type: 'symbol',
-            layout: {
-              'text-field': '',
-              'text-size': 24,
-              'text-transform': 'uppercase',
-              'icon-image': 'circle-15',
-              'text-offset': [0, 1.5]
-            },
-            paint: {
-              'text-color': '#f16624',
-              'text-halo-color': '#fff',
-              'text-halo-width': 2
+            // Add private source to the map
+            if(that.settings.favshow){
+              that.map.addLayer({
+                id: 'firebase',
+                source: 'firebase',
+                type: 'symbol',
+                layout : {
+                  'icon-image':'cat',
+                  "icon-size": 0.05
+                },
+                paint: {
+                  "icon-color": {
+                    "property": "ps",
+                    "stops": [
+                      [0, "#ef3b2c"],
+                      [1, "#0080ff"]
+                    ]
+                  }
+                }
+              })
             }
-          })
 
-        })
+            // Add public source to the map
+            if(that.settings.currshow){
+              that.map.addLayer({
+                id: 'firebase2',
+                source: 'firebase2',
+                type: 'symbol',
+                layout : {
+                  'icon-image':'cat',
+                  "icon-size": 0.05
+                },
+                paint: {
+                  "icon-color": {
+                    "property": "ps",
+                    "stops": [
+                      [0, "#ef3b2c"],
+                      [1, "#0080ff"]
+                    ]
+                  }
+                }
+              })
+            }
+
+            // Add gps source to the map
+            that.map.addLayer({
+              id: 'gps',
+              source: 'gps',
+              type: 'symbol',
+              layout: {
+                'icon-image': 'circle-15'
+              },
+              paint: {
+                'icon-color': '#f16624'
+              }
+            })
+
+          });
+
+
+    })
 
   }
 
