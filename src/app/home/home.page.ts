@@ -291,16 +291,16 @@ export class HomePage implements OnInit {
       this.map.addLayer({
         id: 'firebase',
         source: 'firebase',
-        type: 'symbol',
-        layout: {
-          'text-field': '',
-          'text-size': 24,
-          'text-transform': 'uppercase',
-          'icon-image': 'car-15',
-          'text-offset': [0, 1.5]
-        },
+        type: 'circle',
         paint: {
-          'icon-color': '#f16624'
+          "circle-radius":7,
+          "circle-color": {
+            "property": "ps",
+            "stops": [
+              [0, "#ef3b2c"],
+              [1, "#0080ff"]
+            ]
+          }
         }
       })
     }
@@ -308,16 +308,16 @@ export class HomePage implements OnInit {
       this.map.addLayer({
         id: 'firebase2',
         source: 'firebase2',
-        type: 'symbol',
-        layout: {
-          'text-field': '',
-          'text-size': 24,
-          'text-transform': 'uppercase',
-          'icon-image': 'car-15',
-          'text-offset': [0, 1.5]
-        },
+        type: 'circle',
         paint: {
-          'icon-color': '#fd323f'
+          "circle-radius":7,
+          "circle-color": {
+            "property": "ps",
+            "stops": [
+              [0, "#ef3b2c"],
+              [1, "#228B22"]
+            ]
+          }
         }
       })
     }
@@ -512,16 +512,16 @@ export class HomePage implements OnInit {
             this.map.addLayer({
               id: 'firebase',
               source: 'firebase',
-              type: 'symbol',
-              layout: {
-                'text-field': '',
-                'text-size': 24,
-                'text-transform': 'uppercase',
-                'icon-image': 'car-15',
-                'text-offset': [0, 1.5]
-              },
+              type: 'circle',
               paint: {
-                'icon-color': '#f16624'
+                "circle-radius":7,
+                "circle-color": {
+                  "property": "ps",
+                  "stops": [
+                    [0, "#ef3b2c"],
+                    [1, "#0080ff"]
+                  ]
+                }
               }
             })
           }
@@ -531,16 +531,16 @@ export class HomePage implements OnInit {
             this.map.addLayer({
               id: 'firebase2',
               source: 'firebase2',
-              type: 'symbol',
-              layout: {
-                'text-field': '',
-                'text-size': 24,
-                'text-transform': 'uppercase',
-                'icon-image': 'car-15',
-                'text-offset': [0, 1.5]
-              },
+              type: 'circle',
               paint: {
-                'icon-color': '#fd323f'
+                "circle-radius":7,
+                "circle-color": {
+                  "property": "ps",
+                  "stops": [
+                    [0, "#ef3b2c"],
+                    [1, "#228B22"]
+                  ]
+                }
               }
             })
           }
