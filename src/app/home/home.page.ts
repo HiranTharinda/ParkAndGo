@@ -294,7 +294,7 @@ export class HomePage implements OnInit {
         type: 'symbol',
         layout : {
           'icon-image':'cat',
-          "icon-size": 0.05
+          "icon-size": 0.06
         },
         paint: {
           "icon-color": {
@@ -314,7 +314,7 @@ export class HomePage implements OnInit {
         type: 'symbol',
         layout : {
           'icon-image':'cat',
-          "icon-size": 0.05
+          "icon-size": 0.06
         },
         paint: {
           "icon-color": {
@@ -456,7 +456,7 @@ export class HomePage implements OnInit {
     this.map.addControl(new mapboxgl.NavigationControl());
     var that = this
     this.map.on('load', (event) => {
-          this.map.loadImage('https://upload.wikimedia.org/wikipedia/commons/thumb/6/60/Cat_silhouette.svg/400px-Cat_silhouette.svg.png', function(error, image) {
+          this.map.loadImage('../../assets/a.png', function(error, image) {
             that.mapInitialized = true;
             that.map.addImage('cat', image , {sdf:true});
             /// register the 3 sources public,private and gps to the map
@@ -523,7 +523,7 @@ export class HomePage implements OnInit {
                 type: 'symbol',
                 layout : {
                   'icon-image':'cat',
-                  "icon-size": 0.05
+                  "icon-size": 0.06
                 },
                 paint: {
                   "icon-color": {
@@ -545,7 +545,7 @@ export class HomePage implements OnInit {
                 type: 'symbol',
                 layout : {
                   'icon-image':'cat',
-                  "icon-size": 0.05
+                  "icon-size": 0.06
                 },
                 paint: {
                   "icon-color": {
