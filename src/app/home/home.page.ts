@@ -321,7 +321,7 @@ export class HomePage implements OnInit {
             "property": "ps",
             "stops": [
               [0, "#ef3b2c"],
-              [1, "#0080ff"]
+              [1, "#0b6623"]
             ]
           }
         }
@@ -552,7 +552,7 @@ export class HomePage implements OnInit {
                     "property": "ps",
                     "stops": [
                       [0, "#ef3b2c"],
-                      [1, "#0080ff"]
+                      [1, "#0b6623"]
                     ]
                   }
                 }
