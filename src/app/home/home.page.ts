@@ -11,7 +11,7 @@ import { Geolocation } from '@ionic-native/geolocation/ngx';
 import { LocationAccuracy } from '@ionic-native/location-accuracy/ngx';
 import { AlertController } from '@ionic/angular';
 import { Network } from '@ionic-native/network/ngx';
-
+import * as MapboxDirections from '@mapbox/mapbox-gl-directions/dist/mapbox-gl-directions';
 
 export interface IGeometry {
     type: string;
@@ -88,6 +88,7 @@ export class HomePage implements OnInit {
   search: MapboxGeocoder;
   tempbool = true;
   alreadysubed = false;
+  direction : MapboxDirections;
 
   constructor(private network: Network,private alertCtrl: AlertController,
     private locationAccuracy: LocationAccuracy, private auth: AuthServiceService,
@@ -317,9 +318,18 @@ export class HomePage implements OnInit {
     }
   }
 
+  drawroute(location){
+    this.geolocation.getCurrentPosition().then((resp) => {
+      this.direction.setOrigin([resp.coords.longitude,resp.coords.latitude])
+      this.direction.setDestination(location)
+    });
+
+  }
+
   // Send Notification to Confirm Reporting of a location
-  async sendnotification(id, collection, description,reportno,flagged,ps) {
+  async sendnotification(id, collection, description,reportno,flagged,ps,location) {
     let d = ""
+    console.log(location)
     if(flagged){
       d = '<p>'+description+' </p><br /><p>No of Parking Spaces : '+ps+'</p> <br /><ion-icon color="gp" md="md-flag"></ion-icon><p>This location has been Flagged</p><br /><p> Reports on this location : '+reportno+'</p>'
     } else {
@@ -341,6 +351,12 @@ export class HomePage implements OnInit {
                   text: 'Report',
                   handler: () => {
                     this.reportalert(id,collection,description);
+                  }
+                },
+                {
+                  text: 'GoTo',
+                  handler: () => {
+                    this.drawroute(location)
                   }
                 }
               ]
@@ -423,7 +439,7 @@ export class HomePage implements OnInit {
           }else{
             var flagged = false;
           }
-          this.sendnotification(description,'private',info,rn,flagged,ps)
+          this.sendnotification(description,'private',info,rn,flagged,ps,coordinates)
         });
         // Add a click event to the private layer of the map
         this.map.on('click', 'firebase2', (e) => {
@@ -437,7 +453,7 @@ export class HomePage implements OnInit {
             }else{
               var flagged = false;
             }
-            this.sendnotification(description,'public',info,rn,flagged,ps)
+            this.sendnotification(description,'public',info,rn,flagged,ps,coordinates)
         });
 
     /// Add map controls
@@ -449,8 +465,10 @@ export class HomePage implements OnInit {
           console.log(object);
           that.getResults(object)
         });
+        this.direction = new MapboxDirections({interactive: false,accessToken : mapboxgl.accessToken, mapbox : mapboxgl ,
+           controls : {inputs :false,profileSwitcher:false}});
         this.map.addControl(this.search,'top-left');
-
+        this.map.addControl(this.direction,'bottom-left');
           this.map.loadImage('../../assets/a.png', function(error, image) {
             that.mapInitialized = true;
             that.map.addImage('cat', image , {sdf:true});
