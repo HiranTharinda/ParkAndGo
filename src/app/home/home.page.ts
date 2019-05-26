@@ -89,6 +89,7 @@ export class HomePage implements OnInit {
   tempbool = true;
   alreadysubed = false;
   direction : MapboxDirections;
+  routeset = false;
 
   constructor(private network: Network,private alertCtrl: AlertController,
     private locationAccuracy: LocationAccuracy, private auth: AuthServiceService,
@@ -153,6 +154,11 @@ export class HomePage implements OnInit {
 
 
     });
+  }
+
+  removeroute(){
+    this.direction.removeRoutes();
+    this.routeset = false;
   }
 
   report(location, collection , issue) {
@@ -339,14 +345,7 @@ export class HomePage implements OnInit {
       header: 'Info',
       message: d,
       buttons: [
-                {
-                  text: 'OK',
-                  role: 'cancel',
-                  cssClass: 'secondary',
-                  handler: (blah) => {
-                    console.log('Confirm Cancel: blah');
-                  }
-                },
+
                 {
                   text: 'Report',
                   handler: () => {
@@ -357,6 +356,14 @@ export class HomePage implements OnInit {
                   text: 'GoTo',
                   handler: () => {
                     this.drawroute(location)
+                  }
+                },
+                {
+                  text: 'OK',
+                  role: 'cancel',
+                  cssClass: 'secondary',
+                  handler: (blah) => {
+                    console.log('Confirm Cancel: blah');
                   }
                 }
               ]
@@ -467,6 +474,9 @@ export class HomePage implements OnInit {
         });
         this.direction = new MapboxDirections({interactive: false,accessToken : mapboxgl.accessToken, mapbox : mapboxgl ,
            controls : {inputs :false,profileSwitcher:false}});
+        this.direction.on('route', object => {
+          that.routeset = true;
+        });
         this.map.addControl(this.search,'top-left');
         this.map.addControl(this.direction,'bottom-left');
           this.map.loadImage('../../assets/a.png', function(error, image) {

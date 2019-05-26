@@ -1,3 +1,9 @@
 
 <div class="map" id="map">
+
 </div>
+<ion-fab *ngIf='routeset' vertical="bottom" horizontal="end" slot="fixed">
+  <ion-fab-button style="--background:#000000; --border-radius:5px;" (click)="removeroute()">
+    <ion-icon name="close"></ion-icon>
+  </ion-fab-button>
+</ion-fab>
