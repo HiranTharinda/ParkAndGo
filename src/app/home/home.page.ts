@@ -9,8 +9,6 @@ import { AuthServiceService } from '../auth-service.service';
 import { LocalstorageService } from '../localstorage.service';
 import { Geolocation } from '@ionic-native/geolocation/ngx';
 import { LocationAccuracy } from '@ionic-native/location-accuracy/ngx';
-import { NativeGeocoder, NativeGeocoderReverseResult,
-   NativeGeocoderForwardResult, NativeGeocoderOptions } from '@ionic-native/native-geocoder/ngx';
 import { AlertController } from '@ionic/angular';
 import { Network } from '@ionic-native/network/ngx';
 
@@ -91,7 +89,7 @@ export class HomePage implements OnInit {
   tempbool = true;
   alreadysubed = false;
 
-  constructor(private network: Network,private alertCtrl: AlertController,private nativeGeocoder: NativeGeocoder,
+  constructor(private network: Network,private alertCtrl: AlertController,
     private locationAccuracy: LocationAccuracy, private auth: AuthServiceService,
     private db: DbService, private geolocation: Geolocation, private storage: LocalstorageService) {
 

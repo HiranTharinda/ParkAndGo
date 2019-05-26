@@ -15,11 +15,11 @@ import { IonicModule } from '@ionic/angular';
 import { RouterTestingModule } from '@angular/router/testing';
 import { of , Observable, BehaviorSubject } from 'rxjs';
 
+
 const geolocationmock = {
   getCurrentPosition:()=> new Promise((resolve,reject) => {resolve({coords: {latitude:80,longitude:80}})}) ,
   valueChanges:() => new BehaviorSubject({ foo: 'bar' })
 }
-
 const locationmock = {
   canRequest:() => new Promise((resolve,reject)=> {resolve(true)}),
   request:(options:any)=> new Promise((resolve,reject)=> {resolve()})
@@ -83,8 +83,8 @@ describe('HomePage', () => {
       providers:[{provide:AuthServiceService, useValue:AuthserviceMock},
       {provide:DbService, useValue:dbservicemock},
       {provide:LocationAccuracy, useValue:locationmock},
-      {provide:LocalstorageService, useValue:localstorageMock},
       {provide:Geolocation, useValue:geolocationmock},
+      {provide:LocalstorageService, useValue:localstorageMock},
       { provide:Network , useValue:NetworkStub2}
     ],
       imports :[
@@ -168,6 +168,7 @@ describe('HomePage', () => {
 
   it('should update map on return to page', fakeAsync(()=> {
     component.timesentered = 1
+    component.map = {resize:()=>{console.log('resized')}}
     fixture.detectChanges();
     var storage = TestBed.get(LocalstorageService);
     storspy = spyOn(storage,'provide').and.returnValue(new Promise( (resolve,reject) => resolve({foo:'bar'})));
@@ -199,23 +200,5 @@ describe('HomePage', () => {
     expect(storspy).not.toHaveBeenCalled();
     expect(compspy).not.toHaveBeenCalled();
   }));
-
-  it('should update map on geoquery', fakeAsync(()=>{
-    component.searchbar= 'Galle';
-    component.centermarker = { setLngLat: ()=> {console.log('set to new location')}}
-    component.map = { flyTo: ()=> {console.log('fly')}}
-    fixture.detectChanges();
-    var geocode = TestBed.get(NativeGeocoder);
-    storspy = spyOn(geocode,'forwardGeocode').and.returnValue(new Promise( (resolve,reject) => resolve([{latitude:0,longitude:0}])));
-    compspy = spyOn(component, 'changetype');
-
-    component.getResults();
-    flushMicrotasks();
-
-    expect(storspy).toHaveBeenCalled();
-    expect(compspy).toHaveBeenCalled();
-  }));
-
-
 
 });
