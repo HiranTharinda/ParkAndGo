@@ -2,6 +2,7 @@ import { AfterContentInit, Component, OnInit, ViewChild} from '@angular/core';
 declare var google;
 import { environment } from '../../environments/environment';
 import * as mapboxgl from 'mapbox-gl';
+import * as MapboxGeocoder from '@mapbox/mapbox-gl-geocoder';
 import {Validators, FormBuilder, FormGroup } from '@angular/forms';
 import { DbService } from '../db.service';
 import { AuthServiceService } from '../auth-service.service';
@@ -86,7 +87,7 @@ export class HomePage implements OnInit {
   markerlocation: any;
   // Times entered into the Page
   timesentered = 0;
-  searchbar: string;
+  search: MapboxGeocoder;
   tempbool = true;
   alreadysubed = false;
 
@@ -98,25 +99,13 @@ export class HomePage implements OnInit {
 
   }
 
-  getResults(){
-    let options: NativeGeocoderOptions = {
-        useLocale: true,
-        maxResults: 5
-    };
-    this.nativeGeocoder.forwardGeocode(this.searchbar, options)
-      .then((coordinates: NativeGeocoderForwardResult[]) => {
-        console.log(coordinates);
-        console.log('The coordinates are latitude=' + coordinates[0].latitude + ' and longitude=' + coordinates[0].longitude)
-        this.searchbar = null;
-        this.centermarker.setLngLat([coordinates[0].longitude, coordinates[0].latitude])
-        var markerval = {target : { _lngLat : { lat : coordinates[0].latitude , lng:coordinates[0].longitude }}}
-        this.markerlocation = markerval;
-        this.changetype(markerval);
-        this.map.flyTo({
-          center: [coordinates[0].longitude, coordinates[0].latitude]
-        })
-      })
-      .catch((error: any) => console.log(error));
+  getResults(resp){
+    console.log('got result')
+    console.log([resp.result.center[1], resp.result.center[0]])
+    this.centermarker.setLngLat([resp.result.center[0], resp.result.center[1]])
+    var markerval = {target : { _lngLat : { lat : resp.result.center[1] , lng:resp.result.center[0]}}}
+    this.markerlocation = markerval;
+    this.changetype(markerval);
   }
 
   ionViewWillEnter() {
@@ -206,6 +195,7 @@ export class HomePage implements OnInit {
                     this.centermarker = new mapboxgl.Marker({
                       draggable: true
                     }).setLngLat([this.lng, this.lat]).addTo(this.map);
+
                     // FInd new data from db and update layers from changetype function
                     this.centermarker.on('dragend', markerval => {
                       console.log(markerval)
@@ -456,6 +446,13 @@ export class HomePage implements OnInit {
     this.map.addControl(new mapboxgl.NavigationControl());
     var that = this
     this.map.on('load', (event) => {
+        this.search = new MapboxGeocoder({accessToken : mapboxgl.accessToken, mapbox : mapboxgl})
+        this.search.on('result', object => {
+          console.log(object);
+          that.getResults(object)
+        });
+        this.map.addControl(this.search,'top-left');
+
           this.map.loadImage('../../assets/a.png', function(error, image) {
             that.mapInitialized = true;
             that.map.addImage('cat', image , {sdf:true});
