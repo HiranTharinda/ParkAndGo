@@ -436,31 +436,38 @@ export class HomePage implements OnInit {
 
         // Add a click event to the public layer of the map
         this.map.on('click', 'firebase', (e) => {
-          var coordinates = e.features[0].geometry.coordinates.slice();
-          var description = e.features[0].properties.id;
-          var info = e.features[0].properties.description;
-          var rn = e.features[0].properties.rb;
-          var ps = e.features[0].properties.ps;
-          if(e.features[0].properties.flagged){
-            var flagged = true;
-          }else{
-            var flagged = false;
-          }
-          this.sendnotification(description,'private',info,rn,flagged,ps,coordinates)
+          console.log(e.features[0].properties.cluster)
+            if(e.features[0].properties.cluster){
+            }else{
+              var coordinates = e.features[0].geometry.coordinates.slice();
+              var description = e.features[0].properties.id;
+              var info = e.features[0].properties.description;
+              var rn = e.features[0].properties.rb;
+              var ps = e.features[0].properties.ps;
+              if(e.features[0].properties.flagged){
+                var flagged = true;
+              }else{
+                var flagged = false;
+              }
+              this.sendnotification(description,'private',info,rn,flagged,ps,coordinates)
+            }
         });
         // Add a click event to the private layer of the map
         this.map.on('click', 'firebase2', (e) => {
-            var coordinates = e.features[0].geometry.coordinates.slice();
-            var description = e.features[0].properties.id;
-            var info = e.features[0].properties.description;
-            var rn = e.features[0].properties.rb;
-            var ps = e.features[0].properties.ps;
-            if(e.features[0].properties.flagged){
-              var flagged = true;
+            if(e.features[0].properties.cluster){
             }else{
-              var flagged = false;
+              var coordinates = e.features[0].geometry.coordinates.slice();
+              var description = e.features[0].properties.id;
+              var info = e.features[0].properties.description;
+              var rn = e.features[0].properties.rb;
+              var ps = e.features[0].properties.ps;
+              if(e.features[0].properties.flagged){
+                var flagged = true;
+              }else{
+                var flagged = false;
+              }
+              this.sendnotification(description,'public',info,rn,flagged,ps,coordinates)
             }
-            this.sendnotification(description,'public',info,rn,flagged,ps,coordinates)
         });
 
     /// Add map controls
@@ -510,7 +517,8 @@ export class HomePage implements OnInit {
                data: {
                  type: 'FeatureCollection',
                  features: []
-               }
+               },
+               cluster: false
             });
             /// get source
             that.source1 = that.map.getSource('firebase');
