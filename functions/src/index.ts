@@ -119,7 +119,7 @@ export const callme = functions.pubsub
         console.log(domainnames)
         const d = (JSON.stringify(domainnames))
         request.post(
-            'http://34.73.216.12:80/?url='+d,
+            'http://35.237.70.98:80/?url='+d,
             { json: { urls: 'value' } },
             function (error, response, body) {
                 console.log(response);
@@ -159,7 +159,7 @@ export const callme = functions.pubsub
         console.log(domainnames)
         const d = (JSON.stringify(domainnames))
         request.post(
-            'http://34.73.216.12:80/?url='+d,
+            'http://35.237.70.98:80/?url='+d,
             { json: { urls: 'value' } },
             function (error, response, body) {
                 console.log(response);

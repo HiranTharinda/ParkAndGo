@@ -1,5 +1,5 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { TestBed, async, fakeAsync, tick, flushMicrotasks } from '@angular/core/testing';
+import { TestBed, async, fakeAsync, tick, flushMicrotasks, flush } from '@angular/core/testing';
 import { BackgroundMode } from '@ionic-native/background-mode/ngx'
 import { Platform } from '@ionic/angular';
 import { SplashScreen } from '@ionic-native/splash-screen/ngx';
@@ -42,6 +42,7 @@ const backgroundmock = {
   enable: () => {console.log('enabled')},
   on:() => new BehaviorSubject({foo:'bar'}),
   setDefaults:() => { console.log('Options set')},
+  disableWebViewOptimizations:() => {console.log('disabled')}
 }
 
 const AuthserviceMock = {
@@ -63,7 +64,7 @@ const localstorageMock = {
 
 const fcmmock = {
   getToken: (id:string)=> {console.log('subed priv')},
-  onNotifications: () => new BehaviorSubject({foo:"bar"}),
+  onNotifications: () => new BehaviorSubject({aps:{alert:'this is an alert'}}),
   ManualSubPriv:() => {console.log('subed priv')},
   ManualSubPublic:() => {console.log('subed pub')},
   ManualunsubPriv:() => {console.log('unsubed priv')},
@@ -81,7 +82,7 @@ describe('AppComponent', () => {
     statusBarSpy = jasmine.createSpyObj('StatusBar', ['styleDefault']);
     splashScreenSpy = jasmine.createSpyObj('SplashScreen', ['hide']);
     platformReadySpy = Promise.resolve();
-    platformSpy = jasmine.createSpyObj('Platform', { ready: platformReadySpy });
+    platformSpy = jasmine.createSpyObj('Platform', { ready: platformReadySpy , is:() => true });
 
     TestBed.configureTestingModule({
       declarations: [AppComponent],
@@ -120,16 +121,12 @@ describe('AppComponent', () => {
 
   // TODO: add more tests!
   it('should return correct distance', fakeAsync (() => {
-    var R = 6371; // Radius of the earth in km
-    var dLat = (100 - 50)* (Math.PI/180);  // deg2rad below
-    var dLon = (100 - 50)* (Math.PI/180);
-    var a =
-      Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-      Math.cos((50)* (Math.PI/180)) * Math.cos((50)* (Math.PI/180));
-      Math.sin(dLon / 2) * Math.sin(dLon / 2)
-      ;
-    var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt( 1 - a ));
-    var d = R * c; // Distance in km
-    expect(true).toBeTruthy();
+    const fixture = TestBed.createComponent(AppComponent);
+    const app = fixture.debugElement.componentInstance;
+    var d = app.caldistance(50,50,80,80);
+    console.log(d);
+    expect(d).toBe(3521.723181973181);
+    fixture.destroy();
+    flush();
   }));
 });
