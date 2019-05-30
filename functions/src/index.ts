@@ -1,7 +1,7 @@
 import * as functions from 'firebase-functions';
 import * as admin from 'firebase-admin';
 admin.initializeApp();
-//import * as request from 'request';
+import * as request from 'request';
 
 export const pubreport = functions.firestore.document('pubreports/{locationID}/reportlist/{reportid}').onCreate((snapshot,context) => {
 // Grab the current value of what was written to the Realtime Database.
@@ -35,6 +35,21 @@ export const privreportdelete = functions.firestore.document('privreports/{locat
 
 });
 
+export const publicdelete = functions.firestore.document('public/{locationID}').onDelete((event,context) => {
+// Grab the current value of what was de;eted to the Database.
+    const locid = context.params.locationID;
+    const docref = admin.firestore().collection('pubreports').doc(locid);
+    docref.delete().then( () => {console.log('done')}).catch(error => console.log(error));
+
+});
+
+export const privdelete = functions.firestore.document('private/{locationID}').onDelete((event,context) => {
+// Grab the current value of what was de;eted to the Database.
+    const locid = context.params.locationID;
+    const docref = admin.firestore().collection('privreports').doc(locid)
+    docref.delete().then( () => {console.log('done')}).catch(error => console.log(error));
+
+});
 
 export const publicupdate = functions.firestore.document('public/{locationID}').onUpdate((event,context) => {
 // Grab the current value of what was written to the Realtime Database.
@@ -112,14 +127,14 @@ if(originals && befores){
 export const callme = functions.pubsub
   .topic('getalldata')
   .onPublish(async message => {
-      /*let count = 0;
+      let count = 0;
       admin.firestore().collection("public").stream().on('data', (documentSnapshot) => {
         let domainnames = documentSnapshot.get('url');
         let id = documentSnapshot.id;
         console.log(domainnames)
         const d = (JSON.stringify(domainnames))
         request.post(
-            'http://35.237.70.98:80/?url='+d,
+            'http://35.196.126.81:80/?url='+d,
             { json: { urls: 'value' } },
             function (error, response, body) {
                 console.log(response);
@@ -159,7 +174,7 @@ export const callme = functions.pubsub
         console.log(domainnames)
         const d = (JSON.stringify(domainnames))
         request.post(
-            'http://35.237.70.98:80/?url='+d,
+            'http://35.196.126.81:80/?url='+d,
             { json: { urls: 'value' } },
             function (error, response, body) {
                 console.log(response);
@@ -192,5 +207,5 @@ export const callme = functions.pubsub
         );
       }).on('end', () => {
         console.log(count);
-      });*/
+      });
   });
