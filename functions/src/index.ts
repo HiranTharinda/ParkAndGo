@@ -139,7 +139,7 @@ export const callme = functions.pubsub
             function (error, response, body) {
                 console.log(response);
                 if (!error && response.statusCode == 200) {
-                    if(body.free == 0 ){
+                    if(body.free == 0  && body.taken == 0){
                       console.log(id);
                       console.log(body);
                       admin.firestore().collection("public").doc(id).update({
@@ -179,7 +179,7 @@ export const callme = functions.pubsub
             function (error, response, body) {
                 console.log(response);
                 if (!error && response.statusCode == 200) {
-                    if(body.free == 0 ){
+                    if(body.free == 0 && body.taken == 0){
                       console.log(id);
                       console.log(body);
                       admin.firestore().collection("private").doc(id).update({
